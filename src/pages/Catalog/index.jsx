@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import styles from "./styles.module.css";
 import { useApp } from "../../state/appState";
 import PlateInput from "../../components/PlateInput";
@@ -145,16 +146,23 @@ export default function Catalog() {
             </div>
 
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <div className="text-xs text-slate-600">Сортировка</div>
-                <select
-                  value={filters.sort}
-                  onChange={(e) => setFilters((p) => ({ ...p, sort: e.target.value }))}
-                  className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none"
-                >
-                  <option value="priceDesc">Сначала дороже</option>
-                  <option value="priceAsc">Сначала дешевле</option>
-                </select>
+                <div className="inline-flex max-w-full items-center rounded-2xl border border-slate-200 bg-white">
+                  <select
+                    value={filters.sort}
+                    onChange={(e) => setFilters((p) => ({ ...p, sort: e.target.value }))}
+                    className="w-max max-w-full cursor-pointer appearance-none bg-transparent py-3 pl-4 pr-1.5 text-sm text-slate-900 outline-none"
+                  >
+                    <option value="priceDesc">Сначала дороже</option>
+                    <option value="priceAsc">Сначала дешевле</option>
+                  </select>
+                  <ChevronDown
+                    className="pointer-events-none mr-3 h-4 w-4 shrink-0 text-slate-500"
+                    strokeWidth={2}
+                    aria-hidden
+                  />
+                </div>
               </div>
             </div>
 

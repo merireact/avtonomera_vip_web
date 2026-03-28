@@ -1,4 +1,5 @@
 import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
+import { Search } from "lucide-react";
 
 const LETTER_MAX = 1;
 const DIGITS_MAX = 3;
@@ -20,21 +21,6 @@ function onlyPlateLetters(s) {
 
 function clampMax(s, n) {
   return s.slice(0, n);
-}
-
-function RussiaFlag({ className = "" }) {
-  return (
-    <svg
-      viewBox="0 0 3 2"
-      aria-hidden="true"
-      className={className}
-      focusable="false"
-    >
-      <rect width="3" height="2" fill="#fff" />
-      <rect width="3" height="1.3333" y="0.6667" fill="#0039A6" />
-      <rect width="3" height="0.6667" y="1.3333" fill="#D52B1E" />
-    </svg>
-  );
 }
 
 export default function PlateInput({
@@ -154,17 +140,18 @@ export default function PlateInput({
   }, [picker.open]);
 
   return (
-    <div className="glass w-full p-4 sm:p-5">
+    <div
+      className={["glass w-full", size === "lg" ? "p-5 sm:p-6" : "p-4 sm:p-5"].join(" ")}
+    >
       <div
         className={[
-          "mx-auto flex w-full flex-col items-stretch justify-between gap-3 sm:flex-row",
-          "max-w-3xl",
+          "mx-auto flex w-full max-w-2xl flex-col items-center justify-center gap-4 sm:flex-row sm:gap-5",
         ].join(" ")}
       >
         <div
           className={[
-            "flex flex-1 items-stretch overflow-hidden rounded-2xl border",
-            "border-slate-300 bg-white shadow-[0_14px_40px_rgba(15,23,42,.08)]",
+            "flex w-fit max-w-full shrink-0 items-stretch overflow-hidden rounded-3xl border-2",
+            "border-slate-300 bg-white shadow-[0_16px_44px_rgba(15,23,42,.1)]",
           ].join(" ")}
         >
           <InputBox
@@ -256,27 +243,19 @@ export default function PlateInput({
 
           <div className="flex items-stretch">
             <div className="h-full w-px bg-slate-300/80" />
-            <div className="flex items-center px-1 sm:px-1.5">
-              <div className="flex flex-col items-center justify-center leading-none">
-                <InputBox
-                  ref={rRef}
-                  value={parts.r}
-                  inputMode="numeric"
-                  readOnly
-                  placeholder="77"
-                  onChange={(v) => set("r", clampMax(onlyDigits(v), REGION_MAX))}
-                  onKeyDown={handleKeyDown}
-                  onClick={() => openPicker("r")}
-                  className={ui.region}
-                  ariaLabel="Регион"
-                />
-                <div className="mt-0.5 flex items-center justify-center gap-1.5">
-                  <RussiaFlag className="h-3.5 w-5 rounded-[2px] border border-slate-200" />
-                  <div className="text-[10px] font-semibold tracking-wide text-slate-700">
-                    RUS
-                  </div>
-                </div>
-              </div>
+            <div className="flex items-stretch px-1 sm:px-1.5">
+              <InputBox
+                ref={rRef}
+                value={parts.r}
+                inputMode="numeric"
+                readOnly
+                placeholder="77"
+                onChange={(v) => set("r", clampMax(onlyDigits(v), REGION_MAX))}
+                onKeyDown={handleKeyDown}
+                onClick={() => openPicker("r")}
+                className={ui.region}
+                ariaLabel="Регион"
+              />
             </div>
           </div>
         </div>
@@ -287,6 +266,7 @@ export default function PlateInput({
             onClick={onSubmit}
             className={["btn-luxe shrink-0 w-full sm:w-auto", ui.button].join(" ")}
           >
+            <Search className="h-[1.05em] w-[1.05em] shrink-0 sm:h-[1.1em] sm:w-[1.1em]" strokeWidth={2} aria-hidden />
             {submitLabel}
           </button>
         ) : null}
@@ -311,9 +291,9 @@ export default function PlateInput({
       {picker.open ? (
         <div
           data-plate-picker="1"
-          className="fixed z-[200] w-[84px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,.18)]"
+          className="fixed z-[200] w-[96px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,.18)]"
           style={{
-            left: Math.min(picker.pos.x, window.innerWidth - 96),
+            left: Math.min(picker.pos.x, window.innerWidth - 108),
             top: Math.min(picker.pos.y, window.innerHeight - 320),
           }}
         >
@@ -397,18 +377,23 @@ export default function PlateInput({
 }
 
 const uiMd = {
-  letter: "w-[48px] sm:w-[64px]",
-  digit: "w-[42px] sm:w-[52px]",
-  region: "w-[34px] sm:w-[46px] text-center px-2 py-2 sm:px-2 sm:py-2",
-  button: "px-5 py-4",
+  letter:
+    "min-h-14 w-[46px] px-2.5 py-3.5 text-[19px] sm:min-h-16 sm:w-[54px] sm:px-3 sm:py-4 sm:text-[22px]",
+  digit:
+    "min-h-14 w-[42px] px-2 py-3.5 text-[19px] sm:min-h-16 sm:w-[50px] sm:px-2.5 sm:py-4 sm:text-[22px]",
+  region:
+    "min-h-14 min-w-[50px] w-[50px] px-2 py-3.5 text-center text-[18px] sm:min-h-16 sm:min-w-[58px] sm:w-[58px] sm:px-3 sm:py-4 sm:text-[21px]",
+  button: "px-7 py-4 text-lg sm:px-8 sm:py-5 sm:text-xl",
 };
 
 const uiLg = {
-  letter: "w-[50px] sm:w-[72px] text-[24px] sm:text-[26px]",
-  digit: "w-[44px] sm:w-[58px] text-[24px] sm:text-[26px]",
+  letter:
+    "min-h-16 w-[50px] px-3 py-4 text-[22px] sm:min-h-[72px] sm:w-[62px] sm:px-3.5 sm:py-5 sm:text-[28px]",
+  digit:
+    "min-h-16 w-[46px] px-2.5 py-4 text-[22px] sm:min-h-[72px] sm:w-[56px] sm:px-3 sm:py-5 sm:text-[28px]",
   region:
-    "w-[38px] sm:w-[54px] text-center text-[20px] sm:text-[22px] px-2 py-2 sm:px-2 sm:py-2",
-  button: "px-6 py-4",
+    "min-h-16 min-w-[52px] w-[52px] px-2.5 py-4 text-center text-[20px] sm:min-h-[72px] sm:min-w-[68px] sm:w-[68px] sm:px-3 sm:py-5 sm:text-[26px]",
+  button: "px-7 py-5 text-lg sm:px-10 sm:py-6 sm:text-xl",
 };
 
 const InputBox = forwardRef(function InputBox(
@@ -436,8 +421,8 @@ const InputBox = forwardRef(function InputBox(
       aria-label={ariaLabel}
       readOnly={readOnly}
       className={[
-        "h-full bg-white px-3 py-3 sm:px-4",
-        "text-center font-mono text-[24px] font-semibold tracking-[0.12em] text-slate-900",
+        "h-full bg-white",
+        "text-center font-mono font-semibold tracking-[0.1em] text-slate-900",
         "outline-none placeholder:text-slate-400 cursor-pointer",
         className || "",
       ].join(" ")}
@@ -451,13 +436,36 @@ function Divider() {
 }
 
 function splitPlate(raw) {
-  const s = (raw || "")
+  const cleaned = (raw || "")
     .toUpperCase()
     .replace(/\s+/g, " ")
     .trim()
-    .replace(/[^A-ZА-ЯЁ0-9]/g, "");
+    .replace(/[^A-ZА-ЯЁ0-9 ]/g, "");
 
-  // Поддерживаем частичный ввод: "А", "А7", "А777", "А777А", "А777АА", "А777АА77"
+  if (!cleaned) return { l1: "", d: "", l2: "", l3: "", r: "" };
+
+  // Явный регион после пробела (как отдаёт joinPlate) — не сливаем с цифрами середины.
+  const tokens = cleaned.split(" ").filter(Boolean);
+  if (tokens.length >= 2) {
+    const last = tokens[tokens.length - 1].replace(/\s/g, "");
+    const r = clampMax(onlyDigits(last), REGION_MAX);
+    if (r && /^\d{1,3}$/.test(r) && r === onlyDigits(last)) {
+      const leftJoined = tokens
+        .slice(0, -1)
+        .join("")
+        .replace(/\s/g, "");
+      return { ...parseLeftSegment(leftJoined), r };
+    }
+  }
+
+  const s = cleaned.replace(/\s/g, "");
+
+  // Только цифры 1–3 символа: в этом вводе середина всегда с буквы — значит это регион.
+  if (/^\d{1,3}$/.test(s)) {
+    return { l1: "", d: "", l2: "", l3: "", r: s };
+  }
+
+  // Одна слитная строка: буква + цифры + буквы + регион в конце (пробелы уже убраны).
   const m = s.match(/^([A-ZА-ЯЁ])?(\d{0,3})?([A-ZА-ЯЁ])?([A-ZА-ЯЁ])?(\d{0,3})?$/);
   if (!m) return { l1: "", d: "", l2: "", l3: "", r: "" };
 
@@ -478,6 +486,20 @@ function joinPlate(p) {
   const r = onlyDigits(p.r);
   const left = `${clampMax(l1, 1)}${clampMax(d, 3)}${clampMax(l2, 1)}${clampMax(l3, 1)}`.trim();
   const region = clampMax(r, 3);
-  return [left, region].filter(Boolean).join(" ").trim();
+  if (!region) return left;
+  // Всегда пробел перед регионом — splitPlate различает «А 77» и «А77» (три цифры в середине).
+  return left ? `${left} ${region}` : region;
+}
+
+/** Разбор левой части номера без региона: буква + до 3 цифр + две буквы. */
+function parseLeftSegment(s) {
+  const m = (s || "").match(/^([A-ZА-ЯЁ])?(\d{0,3})([A-ZА-ЯЁ])?([A-ZА-ЯЁ])?$/);
+  if (!m) return { l1: "", d: "", l2: "", l3: "" };
+  return {
+    l1: m[1] || "",
+    d: m[2] || "",
+    l2: m[3] || "",
+    l3: m[4] || "",
+  };
 }
 

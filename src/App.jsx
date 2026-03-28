@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Home from "./pages/Home";
 import Catalog from "./pages/Catalog";
@@ -37,7 +38,7 @@ export default function App() {
       <div className="app-shell">
         <Header />
 
-        <div className="pt-20 sm:pt-24">
+        <div className="flex-1 pt-20 sm:pt-24">
           <AnimatePresence mode="wait" initial={false}>
             <Routes location={location} key={location.pathname + location.search}>
               <Route
@@ -84,6 +85,8 @@ export default function App() {
             </Routes>
           </AnimatePresence>
         </div>
+
+        <Footer />
       </div>
     </AppProvider>
   );

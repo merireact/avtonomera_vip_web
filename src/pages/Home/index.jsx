@@ -7,7 +7,7 @@ import PlateInput from "../../components/PlateInput";
 import NumberDetailsModal from "../../components/NumberDetailsModal";
 import SellNumberModal from "../../components/SellNumberModal";
 import EstimateModal from "../../components/EstimateModal";
-import { Heart } from "lucide-react";
+import { ChevronDown, Heart } from "lucide-react";
 
 function formatPriceRub(value) {
   return new Intl.NumberFormat("ru-RU", {
@@ -160,24 +160,22 @@ export default function Home() {
   }
 
   return (
-    <div className="pb-16">
-      <div className="pt-6 sm:pt-10">
+    <div className={`pb-16 ${styles.homePageRoot}`}>
+      <div className={`pt-4 sm:pt-8 ${styles.homeHeroWrap}`}>
         <Hero
-          plateValue={numberQuery}
-          onPlateChange={setNumberQuery}
-          onFind={runSearch}
           onEstimateClick={() => setEstimateOpen(true)}
           onSellClick={() => setSellOpen(true)}
         />
       </div>
 
-      <section className="mx-auto mt-12 max-w-7xl">
+      <section className={`mx-auto mt-14 max-w-7xl sm:mt-16 ${styles.homeSearchSection}`}>
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <h2 className="section-title">Поиск номеров</h2>
-            <p className="mt-2 muted max-w-2xl">
-              Быстрый ввод, понятные статусы и аккуратные карточки — без лишних
-              эффектов и тяжёлых цветов.
+            <h2 className={styles.searchSectionTitle}>
+              Поиск <span className={styles.searchSectionAccent}>номеров</span>
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm text-slate-600 sm:text-base">
+              Ввод номера, фильтры и карточки — без лишнего шума.
             </p>
           </div>
         </div>
@@ -210,16 +208,23 @@ export default function Home() {
             </div>
 
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <div className="text-xs text-slate-600">Сортировка</div>
-                <select
-                  value={filters.sort}
-                  onChange={(e) => setFilters((p) => ({ ...p, sort: e.target.value }))}
-                  className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none"
-                >
-                  <option value="priceDesc">Сначала дороже</option>
-                  <option value="priceAsc">Сначала дешевле</option>
-                </select>
+                <div className="inline-flex max-w-full items-center rounded-2xl border border-slate-200 bg-white">
+                  <select
+                    value={filters.sort}
+                    onChange={(e) => setFilters((p) => ({ ...p, sort: e.target.value }))}
+                    className="w-max max-w-full cursor-pointer appearance-none bg-transparent py-3 pl-4 pr-1.5 text-sm text-slate-900 outline-none"
+                  >
+                    <option value="priceDesc">Сначала дороже</option>
+                    <option value="priceAsc">Сначала дешевле</option>
+                  </select>
+                  <ChevronDown
+                    className="pointer-events-none mr-3 h-4 w-4 shrink-0 text-slate-500"
+                    strokeWidth={2}
+                    aria-hidden
+                  />
+                </div>
               </div>
             </div>
 

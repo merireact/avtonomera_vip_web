@@ -1,28 +1,75 @@
+/* Палитра: красный / тёмно-красный (#brand) и тёмно-синий (#0c1f33) */
+
+.homePageRoot {
+  position: relative;
+}
+
+.homePageRoot::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    120% 80% at 50% -20%,
+    rgba(193, 0, 26, 0.04),
+    transparent 52%
+  );
+}
+
+.homeHeroWrap {
+  position: relative;
+  z-index: 1;
+}
+
+.homeSearchSection {
+  position: relative;
+  z-index: 1;
+}
+
+.searchSectionTitle {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: clamp(1.625rem, 3.5vw, 2.25rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: rgb(15 23 42);
+}
+
+.searchSectionAccent {
+  color: rgb(122 0 16);
+}
+
 .numberCard {
-  border-radius: 18px;
-  border: 1px solid rgba(15, 23, 42, 0.12);
-  background: rgba(255, 255, 255, 1);
+  border-radius: 16px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: #fff;
   padding: 18px;
-  box-shadow: 0 18px 70px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.06);
   position: relative;
   overflow: hidden;
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.numberCard::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: rgb(122 0 16);
+  opacity: 0.85;
 }
 
 .numberCard::after {
-  content: "";
-  position: absolute;
-  inset: -40px;
-  background: radial-gradient(
-    50% 45% at 70% 35%,
-    rgba(193, 0, 26, 0.10),
-    transparent 60%
-  );
-  opacity: 0;
-  transition: opacity 250ms ease;
-  pointer-events: none;
+  display: none;
 }
 
-.numberCard:hover::after {
-  opacity: 1;
+.numberCard:hover {
+  border-color: rgba(122, 0, 16, 0.2);
+  box-shadow:
+    0 14px 48px rgba(12, 31, 51, 0.08),
+    0 0 0 1px rgba(193, 0, 26, 0.06);
 }
-

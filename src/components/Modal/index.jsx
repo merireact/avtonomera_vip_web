@@ -18,7 +18,7 @@ export default function Modal({ title, children, onClose, footer }) {
         onClick={onClose}
       />
 
-      <div className="relative mx-auto flex min-h-full max-w-2xl items-center px-4 py-8">
+      <div className="relative mx-auto flex min-h-full max-w-2xl items-start justify-center px-4 pb-8 pt-12 sm:pt-16 md:pt-20">
         <div className="glass relative w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_28px_80px_rgba(15,23,42,.20)]">
           <div className="flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-4">
             <div>
