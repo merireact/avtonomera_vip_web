@@ -1,0 +1,12 @@
+.count {
+  min-width: 34px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: rgba(248, 250, 252, 1);
+  color: rgba(15, 23, 42, 0.7);
+  font-size: 12px;
+}
+

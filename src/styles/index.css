@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --brand: 193 0 26; /* #C1001A */
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-white text-slate-900 font-sans antialiased;
+  }
+
+  *::selection {
+    background: rgba(193, 0, 26, 0.14);
+  }
+}
+
+@layer components {
+  .app-shell {
+    @apply min-h-screen;
+    background-image: theme("backgroundImage.luxeRadial");
+  }
+
+  .glass {
+    @apply bg-white border border-slate-200/70 rounded-luxe shadow-[0_14px_40px_rgba(15,23,42,.10)];
+  }
+
+  .glass-strong {
+    @apply bg-white border border-slate-200/80 rounded-luxe shadow-[0_16px_50px_rgba(15,23,42,.12)];
+  }
+
+  .gold-ring {
+    box-shadow: 0 0 0 1px rgba(193, 0, 26, 0.22), 0 0 26px rgba(193, 0, 26, 0.12);
+  }
+
+  .btn-luxe {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium tracking-wide transition duration-300;
+    background: linear-gradient(135deg, rgba(193, 0, 26, 0.96), rgba(122, 0, 16, 0.96));
+    color: white;
+    box-shadow: 0 0 0 1px rgba(193, 0, 26, 0.18), 0 14px 40px rgba(193, 0, 26, 0.18);
+  }
+
+  .btn-luxe:hover {
+    box-shadow: 0 0 0 1px rgba(193, 0, 26, 0.26), 0 0 24px rgba(193, 0, 26, 0.14),
+      0 16px 46px rgba(193, 0, 26, 0.20);
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium tracking-wide transition duration-300;
+    @apply bg-white border border-slate-200 text-slate-900;
+  }
+
+  .btn-ghost:hover {
+    @apply border-slate-300 bg-slate-50;
+    box-shadow: 0 0 0 1px rgba(193, 0, 26, 0.10), 0 0 22px rgba(193, 0, 26, 0.08);
+    transform: translateY(-1px);
+  }
+
+  .section-title {
+    @apply font-display text-3xl sm:text-4xl tracking-tight;
+  }
+
+  .muted {
+    @apply text-slate-600;
+  }
+}
+

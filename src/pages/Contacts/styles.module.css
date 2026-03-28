@@ -1,0 +1,24 @@
+.messengerBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 999px;
+  padding: 12px 16px;
+  font-size: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 1);
+  color: rgba(15, 23, 42, 0.85);
+  transition: transform 250ms ease, box-shadow 250ms ease, border-color 250ms ease,
+    background 250ms ease, color 250ms ease;
+}
+
+.messengerBtn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(193, 0, 26, 0.22);
+  color: rgba(15, 23, 42, 0.95);
+  background: rgba(248, 250, 252, 1);
+  box-shadow: 0 0 0 1px rgba(193, 0, 26, 0.12),
+    0 0 22px rgba(193, 0, 26, 0.1);
+}
+

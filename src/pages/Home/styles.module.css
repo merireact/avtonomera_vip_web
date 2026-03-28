@@ -1,0 +1,28 @@
+.numberCard {
+  border-radius: 18px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 1);
+  padding: 18px;
+  box-shadow: 0 18px 70px rgba(15, 23, 42, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.numberCard::after {
+  content: "";
+  position: absolute;
+  inset: -40px;
+  background: radial-gradient(
+    50% 45% at 70% 35%,
+    rgba(193, 0, 26, 0.10),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 250ms ease;
+  pointer-events: none;
+}
+
+.numberCard:hover::after {
+  opacity: 1;
+}
+
