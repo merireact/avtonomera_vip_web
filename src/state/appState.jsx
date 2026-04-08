@@ -14,6 +14,9 @@ export function AppProvider({ children }) {
   const [favorites, setFavorites] = useState(() => new Set());
 
   const [numberQuery, setNumberQuery] = useState("");
+  const [numberQueryParts, setNumberQueryParts] = useState({
+    l1: "", d1: "", d2: "", d3: "", l2: "", l3: "", r: ""
+  });
   const [numberImages, setNumberImages] = useState(() => ({}));
 
   const value = useMemo(
@@ -23,10 +26,12 @@ export function AppProvider({ children }) {
       setFavorites,
       numberQuery,
       setNumberQuery,
+      numberQueryParts,
+      setNumberQueryParts,
       numberImages,
       setNumberImages,
     }),
-    [favorites, numberQuery, numberImages]
+    [favorites, numberQuery, numberQueryParts, numberImages]
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -26,6 +26,7 @@ function clampMax(s, n) {
 export default function PlateInput({
   value,
   onChange,
+  onPartsChange,
   onSubmit,
   size = "md",
   showSubmitButton = true,
@@ -57,7 +58,8 @@ export default function PlateInput({
 
   useEffect(() => {
     onChange?.(plate);
-  }, [plate, onChange]);
+    onPartsChange?.(parts);
+  }, [plate, parts, onChange, onPartsChange]);
 
   const ui = size === "lg" ? uiLg : uiMd;
 
@@ -107,13 +109,17 @@ export default function PlateInput({
   }
 
   function digitAt(idx) {
-    return parts.d[idx] || "";
+    if (idx === 0) return parts.d1 || "";
+    if (idx === 1) return parts.d2 || "";
+    if (idx === 2) return parts.d3 || "";
+    return "";
   }
 
   function setDigitAt(idx, digit) {
-    const current = parts.d.padEnd(3, "");
-    const next = (current.slice(0, idx) + digit + current.slice(idx + 1)).slice(0, 3).trimEnd();
-    set("d", clampMax(onlyDigits(next), DIGITS_MAX));
+    const d = clampMax(onlyDigits(digit), 1);
+    if (idx === 0) set("d1", d);
+    if (idx === 1) set("d2", d);
+    if (idx === 2) set("d3", d);
   }
 
   function pickDigit(part, digit) {
@@ -283,7 +289,7 @@ export default function PlateInput({
           type="button"
           className="text-xs text-slate-700 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-400"
           onClick={() => {
-            setParts({ l1: "", d: "", l2: "", l3: "", r: "" });
+            setParts({ l1: "", d1: "", d2: "", d3: "", l2: "", l3: "", r: "" });
             l1Ref.current?.focus();
           }}
         >
@@ -445,7 +451,7 @@ function splitPlate(raw) {
     .trim()
     .replace(/[^A-ZА-ЯЁ0-9 ]/g, "");
 
-  if (!cleaned) return { l1: "", d: "", l2: "", l3: "", r: "" };
+  if (!cleaned) return { l1: "", d1: "", d2: "", d3: "", l2: "", l3: "", r: "" };
 
   // Явный регион после пробела (как отдаёт joinPlate) — не сливаем с цифрами середины.
   const tokens = cleaned.split(" ").filter(Boolean);
@@ -465,16 +471,19 @@ function splitPlate(raw) {
 
   // Только цифры 1–3 символа: в этом вводе середина всегда с буквы — значит это регион.
   if (/^\d{1,3}$/.test(s)) {
-    return { l1: "", d: "", l2: "", l3: "", r: s };
+    return { l1: "", d1: "", d2: "", d3: "", l2: "", l3: "", r: s };
   }
 
   // Одна слитная строка: буква + цифры + буквы + регион в конце (пробелы уже убраны).
   const m = s.match(/^([A-ZА-ЯЁ])?(\d{0,3})?([A-ZА-ЯЁ])?([A-ZА-ЯЁ])?(\d{0,3})?$/);
-  if (!m) return { l1: "", d: "", l2: "", l3: "", r: "" };
+  if (!m) return { l1: "", d1: "", d2: "", d3: "", l2: "", l3: "", r: "" };
 
+  const dStr = m[2] || "";
   return {
     l1: m[1] || "",
-    d: m[2] || "",
+    d1: dStr[0] || "",
+    d2: dStr[1] || "",
+    d3: dStr[2] || "",
     l2: m[3] || "",
     l3: m[4] || "",
     r: m[5] || "",
@@ -483,11 +492,13 @@ function splitPlate(raw) {
 
 function joinPlate(p) {
   const l1 = onlyPlateLetters(p.l1);
-  const d = onlyDigits(p.d);
+  const d1 = onlyDigits(p.d1);
+  const d2 = onlyDigits(p.d2);
+  const d3 = onlyDigits(p.d3);
   const l2 = onlyPlateLetters(p.l2);
   const l3 = onlyPlateLetters(p.l3);
   const r = onlyDigits(p.r);
-  const left = `${clampMax(l1, 1)}${clampMax(d, 3)}${clampMax(l2, 1)}${clampMax(l3, 1)}`.trim();
+  const left = `${clampMax(l1, 1)}${clampMax(d1, 1)}${clampMax(d2, 1)}${clampMax(d3, 1)}${clampMax(l2, 1)}${clampMax(l3, 1)}`.trim();
   const region = clampMax(r, 3);
   if (!region) return left;
   // Всегда пробел перед регионом — splitPlate различает «А 77» и «А77» (три цифры в середине).
@@ -497,10 +508,13 @@ function joinPlate(p) {
 /** Разбор левой части номера без региона: буква + до 3 цифр + две буквы. */
 function parseLeftSegment(s) {
   const m = (s || "").match(/^([A-ZА-ЯЁ])?(\d{0,3})([A-ZА-ЯЁ])?([A-ZА-ЯЁ])?$/);
-  if (!m) return { l1: "", d: "", l2: "", l3: "" };
+  if (!m) return { l1: "", d1: "", d2: "", d3: "", l2: "", l3: "" };
+  const dStr = m[2] || "";
   return {
     l1: m[1] || "",
-    d: m[2] || "",
+    d1: dStr[0] || "",
+    d2: dStr[1] || "",
+    d3: dStr[2] || "",
     l2: m[3] || "",
     l3: m[4] || "",
   };

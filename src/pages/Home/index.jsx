@@ -9,6 +9,7 @@ import NumberDetailsModal from "../../components/NumberDetailsModal";
 import SellNumberModal from "../../components/SellNumberModal";
 import EstimateModal from "../../components/EstimateModal";
 import { ChevronDown, Heart, ChevronLeft, ChevronRight } from "lucide-react";
+import { matchPlatePositional } from "../../utils/plateMatch";
 
 function formatPriceRub(value) {
   return new Intl.NumberFormat("ru-RU", {
@@ -54,6 +55,8 @@ export default function Home() {
     numbers,
     numberQuery,
     setNumberQuery,
+    numberQueryParts,
+    setNumberQueryParts,
     numberImages,
     setNumberImages,
     favorites,
@@ -121,12 +124,13 @@ export default function Home() {
       })
       .filter((n) => n.price >= 0);
 
-    const byQuery = !q ? filtered : filtered.filter((n) => n.plate.toLowerCase().includes(q));
+    const hasQueryParts = Object.values(numberQueryParts || {}).some(v => v);
+    const byQuery = !hasQueryParts ? filtered : filtered.filter((n) => matchPlatePositional(n.plate, numberQueryParts));
     const sorted = [...byQuery].sort((a, b) =>
       filters.sort === "priceAsc" ? a.price - b.price : b.price - a.price
     );
     return sorted;
-  }, [numbers, numberQuery, filters]);
+  }, [numbers, numberQueryParts, filters]);
 
   const ITEMS_PER_PAGE = 15;
   const [currentPage, setCurrentPage] = useState(1);
@@ -196,7 +200,13 @@ export default function Home() {
         </div>
 
         <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="mt-6">
-          <PlateInput value={numberQuery} onChange={setNumberQuery} onSubmit={runSearch} size="lg" />
+          <PlateInput
+            value={numberQuery}
+            onChange={setNumberQuery}
+            onPartsChange={setNumberQueryParts}
+            onSubmit={runSearch}
+            size="lg"
+          />
 
           <div className="mt-4 grid gap-3">
             <div className="flex flex-wrap gap-2">
@@ -325,7 +335,7 @@ export default function Home() {
           <div className="mt-8 flex items-center justify-center gap-4">
             <button
               type="button"
-              className="btn-ghost flex h-10 w-10 items-center justify-center rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-ghost flex h-10 w-10 p-0 shrink-0 items-center justify-center rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={currentPage === 1}
               onClick={() => setCurrentPage((p) => p - 1)}
             >
@@ -336,7 +346,7 @@ export default function Home() {
             </div>
             <button
               type="button"
-              className="btn-ghost flex h-10 w-10 items-center justify-center rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-ghost flex h-10 w-10 p-0 shrink-0 items-center justify-center rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage((p) => p + 1)}
             >
