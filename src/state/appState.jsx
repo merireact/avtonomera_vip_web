@@ -1,5 +1,12 @@
 import React, { createContext, useContext, useMemo, useState } from "react";
-import { numbersMock } from "../utils/mockData";
+import numbersData from "../numbers.json";
+
+const realNumbers = numbersData.map((n, i) => ({
+  id: `rn${i}`,
+  plate: n.number,
+  price: n.price,
+  status: "В наличии"
+}));
 
 const AppContext = createContext(null);
 
@@ -11,7 +18,7 @@ export function AppProvider({ children }) {
 
   const value = useMemo(
     () => ({
-      numbers: numbersMock,
+      numbers: realNumbers,
       favorites,
       setFavorites,
       numberQuery,

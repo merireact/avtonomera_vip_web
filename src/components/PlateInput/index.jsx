@@ -141,17 +141,17 @@ export default function PlateInput({
 
   return (
     <div
-      className={["glass w-full", size === "lg" ? "p-5 sm:p-6" : "p-4 sm:p-5"].join(" ")}
+      className={["glass w-full", size === "lg" ? "p-3 sm:p-6" : "p-3 sm:p-5"].join(" ")}
     >
       <div
         className={[
-          "mx-auto flex w-full max-w-2xl flex-col items-center justify-center gap-4 sm:flex-row sm:gap-5",
+          "mx-auto flex w-full max-w-2xl flex-col items-center justify-center gap-3 sm:flex-row sm:gap-5",
         ].join(" ")}
       >
         <div
           className={[
-            "flex w-fit max-w-full shrink-0 items-stretch overflow-hidden rounded-3xl border-2",
-            "border-slate-300 bg-white shadow-[0_16px_44px_rgba(15,23,42,.1)]",
+            "flex w-fit max-w-full shrink-0 items-stretch overflow-x-auto overflow-y-hidden rounded-3xl border-2",
+            "border-slate-300 bg-white shadow-[0_16px_44px_rgba(15,23,42,.1)] [-webkit-overflow-scrolling:touch]",
           ].join(" ")}
         >
           <InputBox
@@ -241,9 +241,9 @@ export default function PlateInput({
             ariaLabel="Третья буква"
           />
 
-          <div className="flex items-stretch">
-            <div className="h-full w-px bg-slate-300/80" />
-            <div className="flex items-stretch px-1 sm:px-1.5">
+          <div className="flex shrink-0 items-stretch">
+            <div className="h-full w-px shrink-0 bg-slate-300/80" />
+            <div className="flex shrink-0 items-stretch px-0.5 sm:px-1.5">
               <InputBox
                 ref={rRef}
                 value={parts.r}
@@ -378,21 +378,21 @@ export default function PlateInput({
 
 const uiMd = {
   letter:
-    "min-h-14 w-[46px] px-2.5 py-3.5 text-[19px] sm:min-h-16 sm:w-[54px] sm:px-3 sm:py-4 sm:text-[22px]",
+    "min-h-[52px] w-10 shrink-0 px-2 py-3 text-[17px] tracking-[0.1em] sm:min-h-16 sm:w-[54px] sm:px-3 sm:py-4 sm:text-[22px]",
   digit:
-    "min-h-14 w-[42px] px-2 py-3.5 text-[19px] sm:min-h-16 sm:w-[50px] sm:px-2.5 sm:py-4 sm:text-[22px]",
+    "min-h-[52px] w-9 shrink-0 px-1.5 py-3 text-[17px] tracking-[0.1em] sm:min-h-16 sm:w-[50px] sm:px-2.5 sm:py-4 sm:text-[22px]",
   region:
-    "min-h-14 min-w-[50px] w-[50px] px-2 py-3.5 text-center text-[18px] sm:min-h-16 sm:min-w-[58px] sm:w-[58px] sm:px-3 sm:py-4 sm:text-[21px]",
+    "min-h-[52px] min-w-[60px] w-[60px] shrink-0 px-1.5 py-3 text-center text-[16px] tracking-normal sm:min-h-16 sm:min-w-[62px] sm:w-[62px] sm:px-3 sm:py-4 sm:text-[21px] sm:tracking-[0.1em]",
   button: "px-7 py-4 text-lg sm:px-8 sm:py-5 sm:text-xl",
 };
 
 const uiLg = {
   letter:
-    "min-h-16 w-[50px] px-3 py-4 text-[22px] sm:min-h-[72px] sm:w-[62px] sm:px-3.5 sm:py-5 sm:text-[28px]",
+    "min-h-[56px] w-10 shrink-0 px-2 py-3.5 text-[18px] tracking-[0.1em] sm:min-h-[72px] sm:w-[62px] sm:px-3.5 sm:py-5 sm:text-[28px]",
   digit:
-    "min-h-16 w-[46px] px-2.5 py-4 text-[22px] sm:min-h-[72px] sm:w-[56px] sm:px-3 sm:py-5 sm:text-[28px]",
+    "min-h-[56px] w-9 shrink-0 px-1.5 py-3.5 text-[18px] tracking-[0.1em] sm:min-h-[72px] sm:w-[56px] sm:px-3 sm:py-5 sm:text-[28px]",
   region:
-    "min-h-16 min-w-[52px] w-[52px] px-2.5 py-4 text-center text-[20px] sm:min-h-[72px] sm:min-w-[68px] sm:w-[68px] sm:px-3 sm:py-5 sm:text-[26px]",
+    "min-h-[56px] min-w-[64px] w-[64px] shrink-0 px-1.5 py-3.5 text-center text-[17px] tracking-normal sm:min-h-[72px] sm:min-w-[72px] sm:w-[72px] sm:px-3 sm:py-5 sm:text-[26px] sm:tracking-[0.1em]",
   button: "px-7 py-5 text-lg sm:px-10 sm:py-6 sm:text-xl",
 };
 
@@ -422,7 +422,7 @@ const InputBox = forwardRef(function InputBox(
       readOnly={readOnly}
       className={[
         "h-full bg-white",
-        "text-center font-mono font-semibold tracking-[0.1em] text-slate-900",
+        "text-center font-mono font-semibold text-slate-900",
         "outline-none placeholder:text-slate-400 cursor-pointer",
         className || "",
       ].join(" ")}
@@ -432,7 +432,7 @@ const InputBox = forwardRef(function InputBox(
 });
 
 function Divider() {
-  return <div className="h-full w-px bg-slate-300/80" aria-hidden="true" />;
+  return <div className="h-full w-px shrink-0 bg-slate-300/80" aria-hidden="true" />;
 }
 
 function splitPlate(raw) {

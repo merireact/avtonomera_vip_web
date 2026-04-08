@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Hero from "../../components/Hero";
 import styles from "./styles.module.css";
@@ -7,7 +7,7 @@ import PlateInput from "../../components/PlateInput";
 import NumberDetailsModal from "../../components/NumberDetailsModal";
 import SellNumberModal from "../../components/SellNumberModal";
 import EstimateModal from "../../components/EstimateModal";
-import { ChevronDown, Heart } from "lucide-react";
+import { ChevronDown, Heart, ChevronLeft, ChevronRight } from "lucide-react";
 
 function formatPriceRub(value) {
   return new Intl.NumberFormat("ru-RU", {
@@ -125,6 +125,16 @@ export default function Home() {
     );
     return sorted;
   }, [numbers, numberQuery, filters]);
+
+  const ITEMS_PER_PAGE = 15;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [results, isSearching]);
+
+  const totalPages = Math.max(1, Math.ceil(results.length / ITEMS_PER_PAGE));
+  const displayedNumbers = results.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   async function runSearch() {
     setIsSearching(true);
@@ -256,7 +266,7 @@ export default function Home() {
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {isSearching
             ? Array.from({ length: 8 }).map((_, i) => <NumberSkeleton key={i} />)
-            : results.map((n) => (
+            : displayedNumbers.map((n) => (
                 <motion.div
                   key={n.id}
                   whileHover={{ y: -3 }}
@@ -305,6 +315,30 @@ export default function Home() {
                 </motion.div>
               ))}
         </div>
+
+        {totalPages > 1 && !isSearching && (
+          <div className="mt-8 flex items-center justify-center gap-4">
+            <button
+              type="button"
+              className="btn-ghost flex h-10 w-10 items-center justify-center rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((p) => p - 1)}
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <div className="text-sm font-medium text-slate-700">
+              Страница {currentPage} из {totalPages}
+            </div>
+            <button
+              type="button"
+              className="btn-ghost flex h-10 w-10 items-center justify-center rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((p) => p + 1)}
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
+        )}
       </section>
 
       {details ? (

@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { useMemo, useState, useEffect } from "react";
+import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import styles from "./styles.module.css";
 import { useApp } from "../../state/appState";
 import PlateInput from "../../components/PlateInput";
@@ -79,6 +79,19 @@ export default function Catalog() {
     );
     return sorted;
   }, [numbers, numberQuery, filters]);
+
+  const ITEMS_PER_PAGE = 15;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filteredNumbers]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredNumbers.length / ITEMS_PER_PAGE));
+  const displayedNumbers = filteredNumbers.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   function toggleFavorite(id) {
     setFavorites((prev) => {
@@ -190,7 +203,7 @@ export default function Catalog() {
           </div>
 
           <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {filteredNumbers.map((n) => (
+            {displayedNumbers.map((n) => (
               <NumberCard
                 key={n.id}
                 number={n}
@@ -199,6 +212,30 @@ export default function Catalog() {
               />
             ))}
           </div>
+
+          {totalPages > 1 && (
+            <div className="mt-8 flex items-center justify-center gap-4">
+              <button
+                type="button"
+                className="btn-ghost flex h-10 w-10 items-center justify-center rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => p - 1)}
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <div className="text-sm font-medium text-slate-700">
+                Страница {currentPage} из {totalPages}
+              </div>
+              <button
+                type="button"
+                className="btn-ghost flex h-10 w-10 items-center justify-center rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((p) => p + 1)}
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
