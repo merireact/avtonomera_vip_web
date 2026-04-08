@@ -71,7 +71,7 @@ export default function NumberDetailsModal({
       <div className="grid gap-5 sm:grid-cols-[1fr_220px]">
         <div>
           <div className="text-xs text-slate-600">Госномер</div>
-          <div className="mt-2 font-display text-4xl tracking-tight text-slate-900">
+          <div className="mt-2 font-mono text-[2rem] sm:text-4xl font-bold tracking-[0.05em] text-slate-900">
             {number.plate}
           </div>
 

@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import { Calculator, Tag } from "lucide-react";
+import { Search, Tag, RefreshCcw } from "lucide-react";
 
-export default function Hero({ onEstimateClick, onSellClick }) {
+export default function Hero({ onBuyClick, onSellClick, onTransferClick }) {
   return (
     <section className="mx-auto max-w-7xl">
       <div className="relative rounded-2xl border border-slate-200/90 bg-white p-8 shadow-[0_1px_0_rgba(15,23,42,.04),0_18px_48px_rgba(15,23,42,.06)] sm:p-10 md:p-12 lg:p-14">
@@ -32,10 +32,10 @@ export default function Hero({ onEstimateClick, onSellClick }) {
             <button
               type="button"
               className="btn-luxe w-full px-6 py-3.5 text-sm sm:w-auto sm:px-7"
-              onClick={onEstimateClick}
+              onClick={onBuyClick}
             >
-              <Calculator className="h-[1.15em] w-[1.15em] shrink-0" strokeWidth={2} aria-hidden />
-              Оценить номер
+              <Search className="h-[1.15em] w-[1.15em] shrink-0" strokeWidth={2} aria-hidden />
+              Купить номер
             </button>
             <button
               type="button"
@@ -49,6 +49,16 @@ export default function Hero({ onEstimateClick, onSellClick }) {
               <Tag className="h-[1.15em] w-[1.15em] shrink-0" strokeWidth={2} aria-hidden />
               Продать номер
             </button>
+          </div>
+          <div className="mt-4 sm:mt-4">
+             <button
+                type="button"
+                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-bold tracking-wide text-brand-700 bg-brand-50 hover:bg-brand-100 border border-brand-200 transition duration-300"
+                onClick={onTransferClick}
+              >
+                <RefreshCcw className="h-[1.15em] w-[1.15em] shrink-0" strokeWidth={2.5} aria-hidden />
+                Переоформление
+              </button>
           </div>
         </motion.div>
       </div>

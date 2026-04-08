@@ -7,6 +7,7 @@ import Catalog from "./pages/Catalog";
 import Favorites from "./pages/Favorites";
 import Reviews from "./pages/Reviews";
 import Contacts from "./pages/Contacts";
+import Transfer from "./pages/Transfer";
 import { AppProvider } from "./state/appState";
 
 const pageVariants = {
@@ -78,6 +79,14 @@ export default function App() {
                 element={
                   <Page>
                     <Contacts />
+                  </Page>
+                }
+              />
+              <Route
+                path="/transfer"
+                element={
+                  <Page>
+                    <Transfer />
                   </Page>
                 }
               />

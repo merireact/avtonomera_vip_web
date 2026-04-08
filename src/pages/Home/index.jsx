@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import Hero from "../../components/Hero";
 import styles from "./styles.module.css";
 import { useApp } from "../../state/appState";
@@ -48,6 +49,7 @@ function NumberSkeleton() {
 }
 
 export default function Home() {
+  const navigate = useNavigate();
   const {
     numbers,
     numberQuery,
@@ -173,12 +175,15 @@ export default function Home() {
     <div className={`pb-16 ${styles.homePageRoot}`}>
       <div className={`pt-4 sm:pt-8 ${styles.homeHeroWrap}`}>
         <Hero
-          onEstimateClick={() => setEstimateOpen(true)}
+          onBuyClick={() => {
+            document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+          }}
           onSellClick={() => setSellOpen(true)}
+          onTransferClick={() => navigate("/transfer")}
         />
       </div>
 
-      <section className={`mx-auto mt-14 max-w-7xl sm:mt-16 ${styles.homeSearchSection}`}>
+      <section id="catalog-section" className={`mx-auto mt-14 max-w-7xl sm:mt-16 ${styles.homeSearchSection}`}>
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
             <h2 className={styles.searchSectionTitle}>
@@ -289,7 +294,7 @@ export default function Home() {
                     </button>
                   </div>
 
-                  <div className="mt-4 font-display text-3xl tracking-tight text-slate-900">
+                  <div className="mt-4 font-mono text-[1.75rem] sm:text-3xl font-bold tracking-[0.05em] text-slate-900">
                     {n.plate}
                   </div>
                   <div className="mt-2 text-sm text-slate-700">

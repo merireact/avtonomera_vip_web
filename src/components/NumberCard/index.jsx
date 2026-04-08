@@ -20,7 +20,7 @@ export default function NumberCard({ number, onDetails, onBuy }) {
         <div className="text-xs text-slate-500">VIP</div>
       </div>
 
-      <div className="mt-3 font-display text-3xl tracking-tight text-slate-900">
+      <div className="mt-3 font-mono text-[1.75rem] sm:text-3xl font-bold tracking-[0.05em] text-slate-900">
         {number.plate}
       </div>
       <div className="mt-2 text-sm text-slate-700">{formatPriceRub(number.price)}</div>

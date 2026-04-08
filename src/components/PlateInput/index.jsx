@@ -46,11 +46,14 @@ export default function PlateInput({
   const l3Ref = useRef(null);
   const rRef = useRef(null);
 
-  useEffect(() => {
-    setParts(splitPlate(value));
-  }, [value]);
-
   const plate = useMemo(() => joinPlate(parts), [parts]);
+
+  useEffect(() => {
+    if (value !== undefined && value !== joinPlate(parts)) {
+      setParts(splitPlate(value));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
 
   useEffect(() => {
     onChange?.(plate);
