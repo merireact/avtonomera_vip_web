@@ -2,7 +2,6 @@ import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import { Search } from "lucide-react";
 
 const LETTER_MAX = 1;
-const DIGITS_MAX = 3;
 const REGION_MAX = 3;
 
 const PLATE_LETTERS = ["А", "В", "Е", "К", "М", "Н", "О", "Р", "С", "Т", "У", "Х"];

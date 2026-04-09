@@ -31,7 +31,7 @@ export default function Footer() {
               </span>
               <div>
                 <div className="font-display text-xl tracking-tight text-white">
-                  AvtoNomera VIP
+                  Avtonomera Vip
                 </div>
                 <p className="mt-2 max-w-sm text-sm leading-relaxed text-slate-400">
                   Подбор и продажа красивых госномеров в Москве и Московской области.
@@ -101,7 +101,7 @@ export default function Footer() {
           <p className={styles.bottomNote}>
             Сведения на сайте носят информационный характер и не являются публичной офертой.
           </p>
-          <p className={styles.copyright}>© {new Date().getFullYear()} AvtoNomera VIP</p>
+          <p className={styles.copyright}>© {new Date().getFullYear()} Avtonomera Vip</p>
         </div>
       </div>
     </motion.footer>

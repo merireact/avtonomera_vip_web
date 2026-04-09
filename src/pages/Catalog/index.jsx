@@ -32,7 +32,6 @@ export default function Catalog() {
   });
 
   const filteredNumbers = useMemo(() => {
-    const q = numberQuery.trim().toLowerCase();
     const filtered = numbers
       .filter((n) => {
         if (!filters.onlyAvailable) return true;

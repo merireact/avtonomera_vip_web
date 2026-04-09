@@ -74,10 +74,10 @@ export default function Header() {
             aria-label="Перейти на главную"
           >
             <span className={styles.logoMark}>
-              <img src={logo} alt="AvtoNomera VIP" className={styles.logoImg} />
+              <img src={logo} alt="Avtonomera Vip" className={styles.logoImg} />
             </span>
             <div className="leading-tight">
-              <div className="font-display text-lg tracking-tight">AvtoNomera VIP</div>
+              <div className="font-display text-lg tracking-tight">Avtonomera Vip</div>
               <div className="hidden text-xs text-slate-600 lg:block">
                 Москва и Московская область
               </div>

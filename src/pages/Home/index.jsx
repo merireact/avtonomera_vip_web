@@ -79,7 +79,6 @@ export default function Home() {
   const [estimateOpen, setEstimateOpen] = useState(false);
 
   const results = useMemo(() => {
-    const q = numberQuery.trim().toLowerCase();
     const filtered = numbers
       .filter((n) => {
         if (!filters.onlyAvailable) return true;

@@ -14,7 +14,7 @@ export function matchPlatePositional(plate, partsObj) {
     return plate.toLowerCase().includes(q);
   }
 
-  const [_, pl1, pd1, pd2, pd3, pl2, pl3, pr] = m;
+  const [, pl1, pd1, pd2, pd3, pl2, pl3, pr] = m;
   const p = partsObj;
 
   // Check positions if they are provided in search query
