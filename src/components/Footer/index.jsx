@@ -101,7 +101,15 @@ export default function Footer() {
           <p className={styles.bottomNote}>
             Сведения на сайте носят информационный характер и не являются публичной офертой.
           </p>
-          <p className={styles.copyright}>© {new Date().getFullYear()} Avtonomera Vip</p>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className={styles.copyright}>© {new Date().getFullYear()} Avtonomera Vip</p>
+            <NavLink
+              to="/admin/login"
+              className="text-xs text-slate-500 transition hover:text-slate-300"
+            >
+              Для сотрудников
+            </NavLink>
+          </div>
         </div>
       </div>
     </motion.footer>

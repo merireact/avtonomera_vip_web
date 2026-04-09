@@ -10,12 +10,13 @@ import { matchPlatePositional } from "../../utils/plateMatch";
 export default function Catalog() {
   const {
     numbers,
+    numbersLoading,
+    numbersLoadingMore,
+    numbersError,
     numberQuery,
     setNumberQuery,
     numberQueryParts,
     setNumberQueryParts,
-    numberImages,
-    setNumberImages,
     favorites,
     setFavorites,
   } = useApp();
@@ -53,7 +54,8 @@ export default function Catalog() {
         if (!filters.evenTens010) return true;
         const m = n.plate.match(/\d{3}/);
         if (!m) return false;
-        return /^0\d0$/.test(m[0]);
+        const v = parseInt(m[0], 10);
+        return v >= 1 && v <= 10;
       })
       .filter((n) => {
         if (!filters.evenHundreds) return true;
@@ -83,7 +85,7 @@ export default function Catalog() {
     return sorted;
   }, [numbers, numberQueryParts, filters]);
 
-  const ITEMS_PER_PAGE = 15;
+  const ITEMS_PER_PAGE = 12;
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
@@ -105,24 +107,6 @@ export default function Catalog() {
     });
   }
 
-  function setImageForNumber(id, url) {
-    setNumberImages((prev) => {
-      const old = prev[id];
-      if (old && old.startsWith("blob:") && old !== url) {
-        try {
-          URL.revokeObjectURL(old);
-        } catch {
-          // ignore
-        }
-      }
-      if (!url) {
-        const { [id]: _, ...rest } = prev;
-        return rest;
-      }
-      return { ...prev, [id]: url };
-    });
-  }
-
   return (
     <div className="mx-auto max-w-7xl pb-16">
       <div className="pt-6 sm:pt-10">
@@ -130,7 +114,7 @@ export default function Catalog() {
           <div>
             <h1 className="section-title">Каталог номеров</h1>
             <p className="mt-2 muted max-w-2xl">
-              Быстрый поиск по номеру и понятные карточки. Данные сейчас из mock.
+              Быстрый поиск по номеру и понятные карточки. Актуальный каталог в базе данных.
             </p>
           </div>
         </div>
@@ -210,15 +194,32 @@ export default function Catalog() {
             </div>
           </div>
 
+          {numbersError ? (
+            <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
+              Не удалось загрузить номера: {numbersError}
+            </div>
+          ) : null}
+
+          {numbersLoadingMore ? (
+            <p className="mt-3 text-xs text-slate-500">
+              Догружаем каталог в фоне… показано {numbers.length} номеров. Фильтры и счётчик обновятся, когда
+              загрузка завершится.
+            </p>
+          ) : null}
+
           <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {displayedNumbers.map((n) => (
-              <NumberCard
-                key={n.id}
-                number={n}
-                onDetails={() => setDetails(n)}
-                onBuy={() => setDetails(n)}
-              />
-            ))}
+            {numbersLoading && numbers.length === 0 ? (
+              <div className="col-span-full text-sm text-slate-600">Загрузка каталога…</div>
+            ) : (
+              displayedNumbers.map((n) => (
+                <NumberCard
+                  key={n.id}
+                  number={n}
+                  onDetails={() => setDetails(n)}
+                  onBuy={() => setDetails(n)}
+                />
+              ))
+            )}
           </div>
 
           {totalPages > 1 && (
@@ -250,8 +251,8 @@ export default function Catalog() {
       {details ? (
         <NumberDetailsModal
           number={details}
-          imageUrl={numberImages[details.id] || ""}
-          onSetImageUrl={(url) => setImageForNumber(details.id, url)}
+          imageUrl={details.imageUrl || ""}
+          photoReadOnly
           isFavorite={favorites.has(details.id)}
           onToggleFavorite={() => toggleFavorite(details.id)}
           onClose={() => setDetails(null)}

@@ -14,6 +14,7 @@ export default function NumberDetailsModal({
   number,
   imageUrl,
   onSetImageUrl,
+  photoReadOnly = true,
   isFavorite = false,
   onToggleFavorite,
   onClose,
@@ -75,31 +76,33 @@ export default function NumberDetailsModal({
             {number.plate}
           </div>
 
-          <div className="mt-5">
-            <div className="text-xs text-slate-600">Фото</div>
-            <div className="mt-2 flex flex-wrap gap-2">
-              <button type="button" className="btn-luxe px-5 py-3" onClick={onPick}>
-                Загрузить изображение
-              </button>
-              {imageUrl ? (
-                <button
-                  type="button"
-                  className="btn-ghost px-5 py-3"
-                  onClick={() => onSetImageUrl?.("")}
-                >
-                  Удалить
+          {!photoReadOnly ? (
+            <div className="mt-5">
+              <div className="text-xs text-slate-600">Фото</div>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <button type="button" className="btn-luxe px-5 py-3" onClick={onPick}>
+                  Загрузить изображение
                 </button>
-              ) : null}
+                {imageUrl ? (
+                  <button
+                    type="button"
+                    className="btn-ghost px-5 py-3"
+                    onClick={() => onSetImageUrl?.("")}
+                  >
+                    Удалить
+                  </button>
+                ) : null}
+              </div>
+              {fileError ? <div className="mt-2 text-xs text-rose-700">{fileError}</div> : null}
+              <input
+                ref={inputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={onFileChange}
+              />
             </div>
-            {fileError ? <div className="mt-2 text-xs text-rose-700">{fileError}</div> : null}
-            <input
-              ref={inputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={onFileChange}
-            />
-          </div>
+          ) : null}
         </div>
 
         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">

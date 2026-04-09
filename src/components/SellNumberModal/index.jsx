@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import Modal from "../Modal";
+import { supabase, isSupabaseConfigured } from "../../lib/supabase";
 
 function normalizePhone(raw) {
   const digits = (raw || "").replace(/\D+/g, "");
@@ -19,6 +20,7 @@ export default function SellNumberModal({ initialPlate = "", onClose }) {
     telegram: false,
   });
   const [sent, setSent] = useState(false);
+  const [apiError, setApiError] = useState("");
 
   const canSend = useMemo(() => {
     const p = normalizePhone(phone);
@@ -30,16 +32,25 @@ export default function SellNumberModal({ initialPlate = "", onClose }) {
     setMethods((prev) => ({ ...prev, [k]: !prev[k] }));
   }
 
-  function submit() {
+  async function submit() {
     if (!canSend) return;
-    // TODO: заменить на реальный API
-    // eslint-disable-next-line no-console
-    console.log("sell-number-lead", {
+    setApiError("");
+    const payload = {
       name: name.trim(),
       phone: normalizePhone(phone),
-      plate: plate.trim(),
-      methods,
-    });
+      plate: plate.trim() || null,
+      contact_methods: methods,
+    };
+    if (isSupabaseConfigured && supabase) {
+      const { error } = await supabase.from("sell_requests").insert(payload);
+      if (error) {
+        setApiError(error.message);
+        return;
+      }
+    } else {
+      // eslint-disable-next-line no-console
+      console.log("sell-number-lead (configure Supabase to persist)", payload);
+    }
     setSent(true);
   }
 
@@ -66,6 +77,12 @@ export default function SellNumberModal({ initialPlate = "", onClose }) {
       {sent ? (
         <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
           Заявка отправлена. Спасибо! Мы скоро свяжемся.
+        </div>
+      ) : null}
+
+      {apiError ? (
+        <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
+          {apiError}
         </div>
       ) : null}
 

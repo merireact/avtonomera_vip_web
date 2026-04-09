@@ -158,112 +158,150 @@ export default function PlateInput({
       >
         <div
           className={[
-            "flex w-fit max-w-full shrink-0 items-stretch overflow-x-auto overflow-y-hidden rounded-3xl border-2",
-            "border-slate-300 bg-white shadow-[0_16px_44px_rgba(15,23,42,.1)] [-webkit-overflow-scrolling:touch]",
+            "max-w-full shrink-0 rounded-[10px] border-[3px] border-black bg-[#d4d4d4] p-[2px] sm:p-[3px]",
+            "shadow-[0_10px_32px_rgba(15,23,42,.14)] [-webkit-overflow-scrolling:touch]",
           ].join(" ")}
         >
-          <InputBox
-            ref={l1Ref}
-            value={parts.l1}
-            readOnly
-            placeholder="А"
-            onChange={(v) => {
-              const next = clampMax(onlyPlateLetters(v), LETTER_MAX);
-              set("l1", next);
-              if (next.length === LETTER_MAX) d1Ref.current?.focus();
-            }}
-            onKeyDown={handleKeyDown}
-            onClick={() => openPicker("l1")}
-            className={ui.letter}
-            ariaLabel="Первая буква"
-          />
-          <Divider />
-          <InputBox
-            ref={d1Ref}
-            value={digitAt(0)}
-            inputMode="numeric"
-            readOnly
-            placeholder="1"
-            onChange={() => {}}
-            onKeyDown={handleKeyDown}
-            onClick={() => openPicker("d1")}
-            className={ui.digit}
-            ariaLabel="Цифра 1"
-          />
-          <Divider />
-          <InputBox
-            ref={d2Ref}
-            value={digitAt(1)}
-            inputMode="numeric"
-            readOnly
-            placeholder="1"
-            onChange={() => {}}
-            onKeyDown={handleKeyDown}
-            onClick={() => openPicker("d2")}
-            className={ui.digit}
-            ariaLabel="Цифра 2"
-          />
-          <Divider />
-          <InputBox
-            ref={d3Ref}
-            value={digitAt(2)}
-            inputMode="numeric"
-            readOnly
-            placeholder="1"
-            onChange={() => {}}
-            onKeyDown={handleKeyDown}
-            onClick={() => openPicker("d3")}
-            className={ui.digit}
-            ariaLabel="Цифра 3"
-          />
-          <Divider />
-          <InputBox
-            ref={l2Ref}
-            value={parts.l2}
-            readOnly
-            placeholder="А"
-            onChange={(v) => {
-              const next = clampMax(onlyPlateLetters(v), LETTER_MAX);
-              set("l2", next);
-              if (next.length === LETTER_MAX) l3Ref.current?.focus();
-            }}
-            onKeyDown={handleKeyDown}
-            onClick={() => openPicker("l2")}
-            className={ui.letter}
-            ariaLabel="Вторая буква"
-          />
-          <Divider />
-          <InputBox
-            ref={l3Ref}
-            value={parts.l3}
-            readOnly
-            placeholder="А"
-            onChange={(v) => {
-              const next = clampMax(onlyPlateLetters(v), LETTER_MAX);
-              set("l3", next);
-              if (next.length === LETTER_MAX) rRef.current?.focus();
-            }}
-            onKeyDown={handleKeyDown}
-            onClick={() => openPicker("l3")}
-            className={ui.letter}
-            ariaLabel="Третья буква"
-          />
+          <div
+            className={[
+              "flex max-w-full items-stretch overflow-x-auto overflow-y-hidden rounded-[7px] bg-white",
+            ].join(" ")}
+          >
+            <div
+              className="flex shrink-0 items-center justify-center pl-3 pr-1 sm:pl-4 sm:pr-1.5"
+              aria-hidden="true"
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-black sm:h-2 sm:w-2" />
+            </div>
 
-          <div className="flex shrink-0 items-stretch">
-            <div className="h-full w-px shrink-0 bg-slate-300/80" />
-            <div className="flex shrink-0 items-stretch px-0.5 sm:px-1.5">
-              <InputBox
-                ref={rRef}
-                value={parts.r}
-                inputMode="numeric"
-                readOnly
-                placeholder="77"
-                onChange={(v) => set("r", clampMax(onlyDigits(v), REGION_MAX))}
-                onKeyDown={handleKeyDown}
-                onClick={() => openPicker("r")}
-                className={ui.region}
-                ariaLabel="Регион"
-              />
+            <div
+              className={[
+                "flex min-w-[13rem] flex-1 items-center justify-center gap-x-2 py-2 pl-1.5 pr-1 sm:min-w-[17rem] sm:gap-x-3 sm:py-2 sm:pl-2.5 sm:pr-2",
+                size === "lg" ? "sm:py-2.5" : "",
+              ].join(" ")}
+            >
+              <div className="flex items-center gap-0">
+                <InputBox
+                  ref={l1Ref}
+                  value={parts.l1}
+                  readOnly
+                  placeholder="М"
+                  onChange={(v) => {
+                    const next = clampMax(onlyPlateLetters(v), LETTER_MAX);
+                    set("l1", next);
+                    if (next.length === LETTER_MAX) d1Ref.current?.focus();
+                  }}
+                  onKeyDown={handleKeyDown}
+                  onClick={() => openPicker("l1")}
+                  className={ui.letter}
+                  ariaLabel="Первая буква"
+                />
+              </div>
+              <div className="flex items-center gap-0">
+                <InputBox
+                  ref={d1Ref}
+                  value={digitAt(0)}
+                  inputMode="numeric"
+                  readOnly
+                  placeholder="7"
+                  onChange={() => {}}
+                  onKeyDown={handleKeyDown}
+                  onClick={() => openPicker("d1")}
+                  className={ui.digit}
+                  ariaLabel="Цифра 1"
+                />
+                <InputBox
+                  ref={d2Ref}
+                  value={digitAt(1)}
+                  inputMode="numeric"
+                  readOnly
+                  placeholder="7"
+                  onChange={() => {}}
+                  onKeyDown={handleKeyDown}
+                  onClick={() => openPicker("d2")}
+                  className={ui.digit}
+                  ariaLabel="Цифра 2"
+                />
+                <InputBox
+                  ref={d3Ref}
+                  value={digitAt(2)}
+                  inputMode="numeric"
+                  readOnly
+                  placeholder="7"
+                  onChange={() => {}}
+                  onKeyDown={handleKeyDown}
+                  onClick={() => openPicker("d3")}
+                  className={ui.digit}
+                  ariaLabel="Цифра 3"
+                />
+              </div>
+              <div className="flex items-center gap-0">
+                <InputBox
+                  ref={l2Ref}
+                  value={parts.l2}
+                  readOnly
+                  placeholder="М"
+                  onChange={(v) => {
+                    const next = clampMax(onlyPlateLetters(v), LETTER_MAX);
+                    set("l2", next);
+                    if (next.length === LETTER_MAX) l3Ref.current?.focus();
+                  }}
+                  onKeyDown={handleKeyDown}
+                  onClick={() => openPicker("l2")}
+                  className={ui.letter}
+                  ariaLabel="Вторая буква"
+                />
+                <InputBox
+                  ref={l3Ref}
+                  value={parts.l3}
+                  readOnly
+                  placeholder="М"
+                  onChange={(v) => {
+                    const next = clampMax(onlyPlateLetters(v), LETTER_MAX);
+                    set("l3", next);
+                    if (next.length === LETTER_MAX) rRef.current?.focus();
+                  }}
+                  onKeyDown={handleKeyDown}
+                  onClick={() => openPicker("l3")}
+                  className={ui.letter}
+                  ariaLabel="Третья буква"
+                />
+              </div>
+            </div>
+
+            <div className="w-px shrink-0 self-stretch bg-black" aria-hidden="true" />
+
+            <div className="flex min-h-0 min-w-[5.85rem] shrink-0 flex-col items-center justify-center gap-1 py-1.5 pl-1 pr-1 sm:min-w-[6.4rem] sm:gap-1.5 sm:py-2 sm:pl-1.5 sm:pr-1.5">
+              <div className="flex min-h-0 w-full flex-1 items-center justify-center">
+                <InputBox
+                  ref={rRef}
+                  value={parts.r}
+                  inputMode="numeric"
+                  readOnly
+                  placeholder="000"
+                  onChange={(v) => set("r", clampMax(onlyDigits(v), REGION_MAX))}
+                  onKeyDown={handleKeyDown}
+                  onClick={() => openPicker("r")}
+                  className={ui.region}
+                  ariaLabel="Регион"
+                />
+              </div>
+              <div className="flex w-full shrink-0 items-center justify-center gap-2 sm:gap-2.5">
+                <span
+                  className="select-none font-plate text-[12px] font-bold leading-none tracking-[0.14em] text-black sm:text-[14px]"
+                  title="Россия"
+                >
+                  RUS
+                </span>
+                <RussianFlag className="h-[14px] w-[22px] shrink-0 sm:h-[17px] sm:w-[26px]" />
+              </div>
+            </div>
+
+            <div
+              className="flex shrink-0 items-center justify-center pl-1 pr-3 sm:pl-1.5 sm:pr-4"
+              aria-hidden="true"
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-black sm:h-2 sm:w-2" />
             </div>
           </div>
         </div>
@@ -386,21 +424,21 @@ export default function PlateInput({
 
 const uiMd = {
   letter:
-    "min-h-[52px] w-10 shrink-0 px-2 py-3 text-[17px] tracking-[0.1em] sm:min-h-16 sm:w-[54px] sm:px-3 sm:py-4 sm:text-[22px]",
+    "min-h-[48px] w-[1.7rem] shrink-0 px-0 py-0 text-[37px] leading-none tracking-[-0.04em] placeholder:text-[39px] sm:min-h-[56px] sm:w-[2.1rem] sm:px-0 sm:py-0 sm:text-[44px] sm:placeholder:text-[46px]",
   digit:
-    "min-h-[52px] w-9 shrink-0 px-1.5 py-3 text-[17px] tracking-[0.1em] sm:min-h-16 sm:w-[50px] sm:px-2.5 sm:py-4 sm:text-[22px]",
+    "min-h-[48px] w-[1.7rem] shrink-0 px-0 py-0 text-[40px] leading-none tracking-[-0.04em] placeholder:text-[42px] sm:min-h-[56px] sm:w-[2.1rem] sm:px-0 sm:py-0 sm:text-[48px] sm:placeholder:text-[50px]",
   region:
-    "min-h-[52px] min-w-[60px] w-[60px] shrink-0 px-1.5 py-3 text-center text-[16px] tracking-normal sm:min-h-16 sm:min-w-[62px] sm:w-[62px] sm:px-3 sm:py-4 sm:text-[21px] sm:tracking-[0.1em]",
+    "h-[48px] min-w-[4.65rem] max-w-[4.65rem] w-[4.65rem] shrink-0 px-0 py-0 text-center text-[30px] tabular-nums leading-none tracking-[-0.02em] placeholder:text-[32px] sm:h-[56px] sm:min-w-[5.15rem] sm:max-w-[5.15rem] sm:w-[5.15rem] sm:px-0 sm:py-0 sm:text-[35px] sm:tracking-tight sm:placeholder:text-[37px]",
   button: "px-7 py-4 text-lg sm:px-8 sm:py-5 sm:text-xl",
 };
 
 const uiLg = {
   letter:
-    "min-h-[56px] w-10 shrink-0 px-2 py-3.5 text-[18px] tracking-[0.1em] sm:min-h-[72px] sm:w-[62px] sm:px-3.5 sm:py-5 sm:text-[28px]",
+    "min-h-[50px] w-[1.8rem] shrink-0 px-0 py-0 text-[38px] leading-none tracking-[-0.04em] placeholder:text-[40px] sm:min-h-[58px] sm:w-[2.2rem] sm:px-0 sm:py-0 sm:text-[46px] sm:placeholder:text-[48px]",
   digit:
-    "min-h-[56px] w-9 shrink-0 px-1.5 py-3.5 text-[18px] tracking-[0.1em] sm:min-h-[72px] sm:w-[56px] sm:px-3 sm:py-5 sm:text-[28px]",
+    "min-h-[50px] w-[1.8rem] shrink-0 px-0 py-0 text-[41px] leading-none tracking-[-0.04em] placeholder:text-[43px] sm:min-h-[58px] sm:w-[2.2rem] sm:px-0 sm:py-0 sm:text-[50px] sm:placeholder:text-[52px]",
   region:
-    "min-h-[56px] min-w-[64px] w-[64px] shrink-0 px-1.5 py-3.5 text-center text-[17px] tracking-normal sm:min-h-[72px] sm:min-w-[72px] sm:w-[72px] sm:px-3 sm:py-5 sm:text-[26px] sm:tracking-[0.1em]",
+    "h-[50px] min-w-[4.85rem] max-w-[4.85rem] w-[4.85rem] shrink-0 px-0 py-0 text-center text-[31px] tabular-nums leading-none tracking-[-0.02em] placeholder:text-[33px] sm:h-[58px] sm:min-w-[5.35rem] sm:max-w-[5.35rem] sm:w-[5.35rem] sm:px-0 sm:py-0 sm:text-[36px] sm:tracking-tight sm:placeholder:text-[38px]",
   button: "px-7 py-5 text-lg sm:px-10 sm:py-6 sm:text-xl",
 };
 
@@ -429,9 +467,14 @@ const InputBox = forwardRef(function InputBox(
       aria-label={ariaLabel}
       readOnly={readOnly}
       className={[
-        "h-full bg-white",
-        "text-center font-mono font-semibold text-slate-900",
-        "outline-none placeholder:text-slate-400 cursor-pointer",
+        "h-full border-0 bg-transparent",
+        "text-center font-plate font-semibold text-slate-900",
+        [
+          "outline-none cursor-pointer",
+          "placeholder:text-slate-300",
+          "placeholder:[-webkit-text-fill-color:rgb(214_211_209)]",
+          "placeholder:[-webkit-text-stroke:0.22px_rgb(87_83_78)]",
+        ].join(" "),
         className || "",
       ].join(" ")}
       placeholder={placeholder}
@@ -439,8 +482,15 @@ const InputBox = forwardRef(function InputBox(
   );
 });
 
-function Divider() {
-  return <div className="h-full w-px shrink-0 bg-slate-300/80" aria-hidden="true" />;
+function RussianFlag({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 3 2" aria-hidden="true">
+      <rect width="3" height="0.667" fill="#fff" />
+      <rect y="0.667" width="3" height="0.667" fill="#0039A6" />
+      <rect y="1.333" width="3" height="0.667" fill="#D52B1E" />
+      <rect width="3" height="2" fill="none" stroke="#000" strokeWidth="0.05" />
+    </svg>
+  );
 }
 
 function splitPlate(raw) {

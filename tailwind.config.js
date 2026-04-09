@@ -14,6 +14,7 @@ module.exports = {
         },
       },
       fontFamily: {
+        plate: ['Oswald', '"Arial Narrow"', "Arial", "sans-serif"],
         display: ["Georgia", '"Times New Roman"', "Times", "serif"],
         sans: [
           "ui-sans-serif",

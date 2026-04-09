@@ -53,12 +53,13 @@ export default function Home() {
   const navigate = useNavigate();
   const {
     numbers,
+    numbersLoading,
+    numbersLoadingMore,
+    numbersError,
     numberQuery,
     setNumberQuery,
     numberQueryParts,
     setNumberQueryParts,
-    numberImages,
-    setNumberImages,
     favorites,
     setFavorites,
   } = useApp();
@@ -100,8 +101,8 @@ export default function Home() {
         if (!filters.evenTens010) return true;
         const m = n.plate.match(/\d{3}/);
         if (!m) return false;
-        // формат 0x0
-        return /^0\d0$/.test(m[0]);
+        const v = parseInt(m[0], 10);
+        return v >= 1 && v <= 10;
       })
       .filter((n) => {
         if (!filters.evenHundreds) return true;
@@ -131,7 +132,7 @@ export default function Home() {
     return sorted;
   }, [numbers, numberQueryParts, filters]);
 
-  const ITEMS_PER_PAGE = 15;
+  const ITEMS_PER_PAGE = 12;
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
@@ -153,24 +154,6 @@ export default function Home() {
       if (next.has(id)) next.delete(id);
       else next.add(id);
       return next;
-    });
-  }
-
-  function setImageForNumber(id, url) {
-    setNumberImages((prev) => {
-      const old = prev[id];
-      if (old && old.startsWith("blob:") && old !== url) {
-        try {
-          URL.revokeObjectURL(old);
-        } catch {
-          // ignore
-        }
-      }
-      if (!url) {
-        const { [id]: _, ...rest } = prev;
-        return rest;
-      }
-      return { ...prev, [id]: url };
     });
   }
 
@@ -277,8 +260,20 @@ export default function Home() {
           </div>
         </motion.div>
 
+        {numbersError ? (
+          <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
+            Не удалось загрузить номера: {numbersError}
+          </div>
+        ) : null}
+
+        {numbersLoadingMore ? (
+          <p className="mt-3 text-xs text-slate-500">
+            Догружаем каталог… уже {numbers.length} номеров.
+          </p>
+        ) : null}
+
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {isSearching
+          {isSearching || (numbersLoading && numbers.length === 0)
             ? Array.from({ length: 8 }).map((_, i) => <NumberSkeleton key={i} />)
             : displayedNumbers.map((n) => (
                 <motion.div
@@ -358,8 +353,8 @@ export default function Home() {
       {details ? (
         <NumberDetailsModal
           number={details}
-          imageUrl={numberImages[details.id] || ""}
-          onSetImageUrl={(url) => setImageForNumber(details.id, url)}
+          imageUrl={details.imageUrl || ""}
+          photoReadOnly
           isFavorite={favorites.has(details.id)}
           onToggleFavorite={() => toggleFavorite(details.id)}
           onClose={() => setDetails(null)}
