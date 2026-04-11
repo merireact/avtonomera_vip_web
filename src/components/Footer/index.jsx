@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
-import { Clock, MapPin, MessageCircle, Phone, Send } from "lucide-react";
+import { Clock, MapPin, Phone } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import logo from "../../assets/logo.png";
+import maxMessengerIcon from "../../assets/max-messenger.png";
+import { IconTelegram, IconWhatsApp } from "../MessengerIcons";
 import styles from "./styles.module.css";
 
 const nav = [
@@ -37,24 +39,38 @@ export default function Footer() {
                   Подбор и продажа красивых госномеров в Москве и Московской области.
                   Работаем аккуратно, быстро и конфиденциально.
                 </p>
-                <div className="mt-4 flex flex-wrap items-center gap-3">
+                <div className="mt-4 flex flex-wrap items-center gap-2.5">
                   <a
-                    className={styles.iconBtn}
                     href="https://wa.me/79099686474"
                     target="_blank"
                     rel="noreferrer"
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#25D366] text-white shadow-sm ring-1 ring-white/10 transition hover:brightness-110"
                     aria-label="WhatsApp"
                   >
-                    <MessageCircle className="h-4 w-4" />
+                    <IconWhatsApp className="h-[18px] w-[18px]" />
                   </a>
                   <a
-                    className={styles.iconBtn}
-                    href="https://t.me/"
+                    href="https://t.me/avtonomera_vip"
                     target="_blank"
                     rel="noreferrer"
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#229ED9] text-white shadow-sm ring-1 ring-white/10 transition hover:brightness-110"
                     aria-label="Telegram"
                   >
-                    <Send className="h-4 w-4" />
+                    <IconTelegram className="h-[18px] w-[18px]" />
+                  </a>
+                  <a
+                    href="tel:+79099686474"
+                    className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full shadow-sm ring-1 ring-white/10 transition hover:opacity-95"
+                    aria-label="Max"
+                  >
+                    <img
+                      src={maxMessengerIcon}
+                      alt=""
+                      width={36}
+                      height={36}
+                      className="h-full w-full object-cover"
+                      draggable={false}
+                    />
                   </a>
                 </div>
               </div>
@@ -92,7 +108,7 @@ export default function Footer() {
             </div>
             <div className={styles.contactRow}>
               <Clock className="mt-0.5 h-4 w-4 shrink-0 text-brand-500" />
-              <span>Ежедневно 10:00–22:00</span>
+              <span>Ежедневно 9:00–23:00</span>
             </div>
           </div>
         </div>

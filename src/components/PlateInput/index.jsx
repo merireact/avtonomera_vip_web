@@ -35,9 +35,12 @@ export default function PlateInput({
   const [picker, setPicker] = useState({
     open: false,
     part: null, // l1 | d1 | d2 | d3 | l2 | l3 | r
-    regionGroup: "moscow",
+    twoDigitRegions: false,
     pos: { x: 0, y: 0 },
+    panelWidth: 96,
   });
+  const plateAnchorRef = useRef(null);
+  const lastPartsSigRef = useRef("");
   const l1Ref = useRef(null);
   const d1Ref = useRef(null);
   const d2Ref = useRef(null);
@@ -57,7 +60,11 @@ export default function PlateInput({
 
   useEffect(() => {
     onChange?.(plate);
-    onPartsChange?.(parts);
+    const sig = JSON.stringify(parts);
+    if (lastPartsSigRef.current !== sig) {
+      lastPartsSigRef.current = sig;
+      onPartsChange?.(parts);
+    }
   }, [plate, parts, onChange, onPartsChange]);
 
   const ui = size === "lg" ? uiLg : uiMd;
@@ -88,11 +95,36 @@ export default function PlateInput({
         ? rRef.current
         : null;
 
-    const rect = el?.getBoundingClientRect?.();
-    const x = rect ? rect.right + 10 : 16;
-    const y = rect ? rect.top : 120;
+    const base = plateAnchorRef.current?.getBoundingClientRect?.();
+    const cell = el?.getBoundingClientRect?.();
+    const GAP = 8;
+    const narrowW = 96;
+    const regionW = base ? Math.min(320, Math.max(260, base.width - 8)) : 300;
 
-    setPicker((p) => ({ ...p, open: true, part, pos: { x, y } }));
+    if (!base || !cell) {
+      setPicker((p) => ({
+        ...p,
+        open: true,
+        part,
+        panelWidth: part === "r" ? regionW : narrowW,
+        pos: { x: 0, y: 0 },
+      }));
+      return;
+    }
+
+    let x = cell.left - base.left;
+    const y = cell.bottom - base.top + GAP;
+    const panelW = part === "r" ? regionW : narrowW;
+
+    x = Math.max(4, Math.min(x, base.width - panelW - 4));
+
+    setPicker((p) => ({
+      ...p,
+      open: true,
+      part,
+      panelWidth: panelW,
+      pos: { x, y },
+    }));
   }
 
   function closePicker() {
@@ -147,28 +179,37 @@ export default function PlateInput({
     return () => window.removeEventListener("pointerdown", onPointerDown);
   }, [picker.open]);
 
+  function filterRegionCodes(codes) {
+    if (!picker.twoDigitRegions) return codes;
+    return codes.filter((c) => c.length === 2);
+  }
+
   return (
     <div
-      className={["glass w-full", size === "lg" ? "p-3 sm:p-6" : "p-3 sm:p-5"].join(" ")}
+      className={[
+        "glass w-full overflow-visible",
+        size === "lg" ? "p-2 sm:p-6" : "p-2 sm:p-5",
+      ].join(" ")}
     >
       <div
         className={[
-          "mx-auto flex w-full max-w-2xl flex-col items-center justify-center gap-3 sm:flex-row sm:gap-5",
+          "mx-auto flex w-full max-w-2xl flex-col items-center justify-center gap-2 overflow-visible sm:flex-row sm:gap-5",
         ].join(" ")}
       >
         <div
+          ref={plateAnchorRef}
           className={[
-            "max-w-full shrink-0 rounded-[10px] border-[3px] border-black bg-[#d4d4d4] p-[2px] sm:p-[3px]",
+            "relative max-w-full shrink-0 overflow-visible rounded-[10px] border-[3px] border-black bg-[#d4d4d4] p-[2px] sm:p-[3px]",
             "shadow-[0_10px_32px_rgba(15,23,42,.14)] [-webkit-overflow-scrolling:touch]",
           ].join(" ")}
         >
           <div
             className={[
-              "flex max-w-full items-stretch overflow-x-auto overflow-y-hidden rounded-[7px] bg-white",
+              "flex w-full max-w-full min-w-0 items-stretch rounded-[7px] bg-white",
             ].join(" ")}
           >
             <div
-              className="flex shrink-0 items-center justify-center pl-3 pr-1 sm:pl-4 sm:pr-1.5"
+              className="flex shrink-0 items-center justify-center pl-2 pr-0.5 sm:pl-4 sm:pr-1.5"
               aria-hidden="true"
             >
               <span className="h-1.5 w-1.5 rounded-full bg-black sm:h-2 sm:w-2" />
@@ -176,8 +217,11 @@ export default function PlateInput({
 
             <div
               className={[
-                "flex min-w-[13rem] flex-1 items-center justify-center gap-x-2 py-2 pl-1.5 pr-1 sm:min-w-[17rem] sm:gap-x-3 sm:py-2 sm:pl-2.5 sm:pr-2",
-                size === "lg" ? "sm:py-2.5" : "",
+                "flex flex-1 items-center justify-center gap-x-1 py-1 pl-1 pr-0.5 max-sm:py-0.5 sm:gap-x-3 sm:py-2 sm:pl-2.5 sm:pr-2 sm:min-w-[17rem]",
+                "mr-3 sm:mr-5",
+                size === "lg"
+                  ? "min-w-0 max-sm:min-w-[10.25rem] sm:py-2.5"
+                  : "min-w-[10.5rem]",
               ].join(" ")}
             >
               <div className="flex items-center gap-0">
@@ -271,7 +315,7 @@ export default function PlateInput({
 
             <div className="w-px shrink-0 self-stretch bg-black" aria-hidden="true" />
 
-            <div className="flex min-h-0 min-w-[5.85rem] shrink-0 flex-col items-center justify-center gap-1 py-1.5 pl-1 pr-1 sm:min-w-[6.4rem] sm:gap-1.5 sm:py-2 sm:pl-1.5 sm:pr-1.5">
+            <div className="flex min-h-0 min-w-[5.1rem] shrink-0 flex-col items-center justify-center gap-0 py-0.5 pl-0.5 pr-0.5 max-sm:gap-0 max-sm:py-0 sm:min-w-[6.4rem] sm:gap-1.5 sm:py-2 sm:pl-1.5 sm:pr-1.5">
               <div className="flex min-h-0 w-full flex-1 items-center justify-center">
                 <InputBox
                   ref={rRef}
@@ -286,42 +330,162 @@ export default function PlateInput({
                   ariaLabel="Регион"
                 />
               </div>
-              <div className="flex w-full shrink-0 items-center justify-center gap-2 sm:gap-2.5">
+              <div className="flex w-full shrink-0 items-center justify-center gap-1.5 max-sm:gap-1 sm:gap-2.5">
                 <span
-                  className="select-none font-plate text-[12px] font-bold leading-none tracking-[0.14em] text-black sm:text-[14px]"
+                  className="select-none font-plate text-[10px] font-bold leading-none tracking-[0.14em] text-black sm:text-[12px] lg:text-[14px]"
                   title="Россия"
                 >
                   RUS
                 </span>
-                <RussianFlag className="h-[14px] w-[22px] shrink-0 sm:h-[17px] sm:w-[26px]" />
+                <RussianFlag className="h-[11px] w-[18px] shrink-0 sm:h-[14px] sm:w-[22px] lg:h-[17px] lg:w-[26px]" />
               </div>
             </div>
 
             <div
-              className="flex shrink-0 items-center justify-center pl-1 pr-3 sm:pl-1.5 sm:pr-4"
+              className="flex shrink-0 items-center justify-center pl-0.5 pr-2 sm:pl-1.5 sm:pr-4"
               aria-hidden="true"
             >
               <span className="h-1.5 w-1.5 rounded-full bg-black sm:h-2 sm:w-2" />
             </div>
           </div>
+
+        {picker.open ? (
+          <div
+            data-plate-picker="1"
+            className={[
+              "absolute z-[200] overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,.18)]",
+              picker.part === "r" ? "max-h-[min(72vh,520px)]" : "",
+            ].join(" ")}
+            style={{
+              left: picker.pos.x,
+              top: picker.pos.y,
+              width: picker.part === "r" ? picker.panelWidth : 96,
+            }}
+          >
+            {picker.part === "l1" || picker.part === "l2" || picker.part === "l3" ? (
+              <div className="max-h-[280px] overflow-auto p-2">
+                <div className="grid gap-2">
+                  {PLATE_LETTERS.map((ch) => (
+                    <button
+                      key={ch}
+                      type="button"
+                      className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-900 hover:bg-slate-50"
+                      onClick={() => pickLetter(picker.part, ch)}
+                    >
+                      {ch}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            {picker.part === "d1" || picker.part === "d2" || picker.part === "d3" ? (
+              <div className="max-h-[280px] overflow-auto p-2">
+                <div className="grid gap-2">
+                  {DIGITS.map((d) => (
+                    <button
+                      key={d}
+                      type="button"
+                      className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-900 hover:bg-slate-50"
+                      onClick={() => pickDigit(picker.part, d)}
+                    >
+                      {d}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            {picker.part === "r" ? (
+              <div className="flex max-h-[min(72vh,520px)] flex-col">
+                <div
+                  className="flex shrink-0 flex-row items-center justify-start gap-3 border-b border-slate-100 px-3 py-2.5"
+                  dir="ltr"
+                >
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={picker.twoDigitRegions}
+                    className={[
+                      "relative h-7 w-12 shrink-0 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40",
+                      picker.twoDigitRegions ? "bg-brand-600" : "bg-slate-200",
+                    ].join(" ")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPicker((p) => ({ ...p, twoDigitRegions: !p.twoDigitRegions }));
+                    }}
+                  >
+                    <span
+                      className={[
+                        "pointer-events-none absolute top-0.5 h-6 w-6 rounded-full bg-white shadow-sm ring-1 ring-black/5 transition-[left] duration-200 ease-out",
+                        picker.twoDigitRegions
+                          ? "left-[calc(100%-1.625rem)]"
+                          : "left-0.5",
+                      ].join(" ")}
+                      aria-hidden
+                    />
+                  </button>
+                  <span className="min-w-0 flex-1 text-left text-sm font-medium text-slate-900">
+                    Двузначные регионы
+                  </span>
+                </div>
+                <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-3 pt-3">
+                  <div className="space-y-4">
+                    <div>
+                      <div className="mb-2 text-[15px] font-semibold text-slate-900">Москва</div>
+                      <div className="grid grid-cols-5 gap-2">
+                        {filterRegionCodes(MOSCOW_REGIONS).map((code) => (
+                          <button
+                            key={code}
+                            type="button"
+                            className="flex aspect-square max-h-11 min-h-0 w-full max-w-11 items-center justify-center justify-self-center rounded-full bg-slate-200 text-[13px] font-bold tabular-nums text-slate-900 transition hover:bg-slate-300 sm:h-11 sm:w-11 sm:text-sm"
+                            onClick={() => pickRegion(code)}
+                          >
+                            {code}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="mb-2 text-[15px] font-semibold text-slate-900">Московская область</div>
+                      <div className="grid grid-cols-5 gap-2">
+                        {filterRegionCodes(MO_REGIONS).map((code) => (
+                          <button
+                            key={code}
+                            type="button"
+                            className="flex aspect-square max-h-11 min-h-0 w-full max-w-11 items-center justify-center justify-self-center rounded-full bg-slate-200 text-[13px] font-bold tabular-nums text-slate-900 transition hover:bg-slate-300 sm:h-11 sm:w-11 sm:text-sm"
+                            onClick={() => pickRegion(code)}
+                          >
+                            {code}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
         </div>
 
         {showSubmitButton ? (
           <button
             type="button"
             onClick={onSubmit}
-            className={["btn-luxe shrink-0 w-full sm:w-auto", ui.button].join(" ")}
+            className={["btn-luxe w-full shrink-0 sm:w-auto", ui.button].join(" ")}
           >
-            <Search className="h-[1.05em] w-[1.05em] shrink-0 sm:h-[1.1em] sm:w-[1.1em]" strokeWidth={2} aria-hidden />
+            <Search
+              className="h-[1.05em] w-[1.05em] shrink-0 sm:h-[1.1em] sm:w-[1.1em]"
+              strokeWidth={2}
+              aria-hidden
+            />
             {submitLabel}
           </button>
         ) : null}
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-        <div className="text-xs text-slate-600">
-          Выбирайте буквы, цифры и регион — доступны только корректные варианты.
-        </div>
+      <div className="mt-3 flex justify-end">
         <button
           type="button"
           className="text-xs text-slate-700 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-400"
@@ -333,113 +497,30 @@ export default function PlateInput({
           Очистить
         </button>
       </div>
-
-      {picker.open ? (
-        <div
-          data-plate-picker="1"
-          className="fixed z-[200] w-[96px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,.18)]"
-          style={{
-            left: Math.min(picker.pos.x, window.innerWidth - 108),
-            top: Math.min(picker.pos.y, window.innerHeight - 320),
-          }}
-        >
-          <div className="max-h-[300px] overflow-auto p-2">
-            {picker.part === "l1" || picker.part === "l2" || picker.part === "l3" ? (
-              <div className="grid gap-2">
-                {PLATE_LETTERS.map((ch) => (
-                  <button
-                    key={ch}
-                    type="button"
-                    className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-900 hover:bg-slate-50"
-                    onClick={() => pickLetter(picker.part, ch)}
-                  >
-                    {ch}
-                  </button>
-                ))}
-              </div>
-            ) : null}
-
-            {picker.part === "d1" || picker.part === "d2" || picker.part === "d3" ? (
-              <div className="grid gap-2">
-                {DIGITS.map((d) => (
-                  <button
-                    key={d}
-                    type="button"
-                    className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-900 hover:bg-slate-50"
-                    onClick={() => pickDigit(picker.part, d)}
-                  >
-                    {d}
-                  </button>
-                ))}
-              </div>
-            ) : null}
-
-            {picker.part === "r" ? (
-              <div className="grid gap-2">
-                <button
-                  type="button"
-                  className={[
-                    "rounded-xl border px-3 py-2 text-xs font-medium",
-                    picker.regionGroup === "moscow"
-                      ? "border-brand-600 text-brand-700 bg-white"
-                      : "border-slate-200 text-slate-700 bg-white hover:bg-slate-50",
-                  ].join(" ")}
-                  onClick={() => setPicker((p) => ({ ...p, regionGroup: "moscow" }))}
-                >
-                  Москва
-                </button>
-                <button
-                  type="button"
-                  className={[
-                    "rounded-xl border px-3 py-2 text-xs font-medium",
-                    picker.regionGroup === "mo"
-                      ? "border-brand-600 text-brand-700 bg-white"
-                      : "border-slate-200 text-slate-700 bg-white hover:bg-slate-50",
-                  ].join(" ")}
-                  onClick={() => setPicker((p) => ({ ...p, regionGroup: "mo" }))}
-                >
-                  МО
-                </button>
-                <div className="h-px bg-slate-200" />
-                <div className="grid gap-2">
-                  {(picker.regionGroup === "moscow" ? MOSCOW_REGIONS : MO_REGIONS).map((r) => (
-                    <button
-                      key={r}
-                      type="button"
-                      className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-900 hover:bg-slate-50"
-                      onClick={() => pickRegion(r)}
-                    >
-                      {r}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ) : null}
-          </div>
-        </div>
-      ) : null}
     </div>
   );
 }
 
 const uiMd = {
   letter:
-    "min-h-[48px] w-[1.7rem] shrink-0 px-0 py-0 text-[37px] leading-none tracking-[-0.04em] placeholder:text-[39px] sm:min-h-[56px] sm:w-[2.1rem] sm:px-0 sm:py-0 sm:text-[44px] sm:placeholder:text-[46px]",
+    "min-h-[42px] w-[1.65rem] shrink-0 px-0 py-0 text-[38px] leading-none tracking-[-0.04em] placeholder:text-[40px] sm:min-h-[60px] sm:w-[2.2rem] sm:text-[48px] sm:placeholder:text-[50px]",
   digit:
-    "min-h-[48px] w-[1.7rem] shrink-0 px-0 py-0 text-[40px] leading-none tracking-[-0.04em] placeholder:text-[42px] sm:min-h-[56px] sm:w-[2.1rem] sm:px-0 sm:py-0 sm:text-[48px] sm:placeholder:text-[50px]",
+    "min-h-[42px] w-[1.65rem] shrink-0 px-0 py-0 text-[40px] leading-none tracking-[-0.04em] placeholder:text-[42px] sm:min-h-[60px] sm:w-[2.2rem] sm:text-[52px] sm:placeholder:text-[54px]",
   region:
-    "h-[48px] min-w-[4.65rem] max-w-[4.65rem] w-[4.65rem] shrink-0 px-0 py-0 text-center text-[30px] tabular-nums leading-none tracking-[-0.02em] placeholder:text-[32px] sm:h-[56px] sm:min-w-[5.15rem] sm:max-w-[5.15rem] sm:w-[5.15rem] sm:px-0 sm:py-0 sm:text-[35px] sm:tracking-tight sm:placeholder:text-[37px]",
-  button: "px-7 py-4 text-lg sm:px-8 sm:py-5 sm:text-xl",
+    "h-[42px] min-w-[4.5rem] max-w-[4.5rem] w-[4.5rem] shrink-0 px-0 py-0 text-center text-[30px] tabular-nums leading-none tracking-[-0.02em] placeholder:text-[32px] sm:h-[60px] sm:min-w-[5.35rem] sm:max-w-[5.35rem] sm:w-[5.35rem] sm:text-[38px] sm:tracking-tight sm:placeholder:text-[40px]",
+  button:
+    "px-7 py-4 text-lg max-sm:px-4 max-sm:py-2 max-sm:text-sm sm:px-8 sm:py-5 sm:text-xl",
 };
 
 const uiLg = {
   letter:
-    "min-h-[50px] w-[1.8rem] shrink-0 px-0 py-0 text-[38px] leading-none tracking-[-0.04em] placeholder:text-[40px] sm:min-h-[58px] sm:w-[2.2rem] sm:px-0 sm:py-0 sm:text-[46px] sm:placeholder:text-[48px]",
+    "min-h-[42px] w-[1.65rem] shrink-0 px-0 py-0 text-[38px] leading-none tracking-[-0.04em] placeholder:text-[40px] sm:min-h-[62px] sm:w-[2.3rem] sm:text-[50px] sm:placeholder:text-[52px]",
   digit:
-    "min-h-[50px] w-[1.8rem] shrink-0 px-0 py-0 text-[41px] leading-none tracking-[-0.04em] placeholder:text-[43px] sm:min-h-[58px] sm:w-[2.2rem] sm:px-0 sm:py-0 sm:text-[50px] sm:placeholder:text-[52px]",
+    "min-h-[42px] w-[1.65rem] shrink-0 px-0 py-0 text-[40px] leading-none tracking-[-0.04em] placeholder:text-[42px] sm:min-h-[62px] sm:w-[2.3rem] sm:text-[54px] sm:placeholder:text-[56px]",
   region:
-    "h-[50px] min-w-[4.85rem] max-w-[4.85rem] w-[4.85rem] shrink-0 px-0 py-0 text-center text-[31px] tabular-nums leading-none tracking-[-0.02em] placeholder:text-[33px] sm:h-[58px] sm:min-w-[5.35rem] sm:max-w-[5.35rem] sm:w-[5.35rem] sm:px-0 sm:py-0 sm:text-[36px] sm:tracking-tight sm:placeholder:text-[38px]",
-  button: "px-7 py-5 text-lg sm:px-10 sm:py-6 sm:text-xl",
+    "h-[42px] min-w-[4.5rem] max-w-[4.5rem] w-[4.5rem] shrink-0 px-0 py-0 text-center text-[30px] tabular-nums leading-none tracking-[-0.02em] placeholder:text-[32px] sm:h-[62px] sm:min-w-[5.5rem] sm:max-w-[5.5rem] sm:w-[5.5rem] sm:text-[40px] sm:tracking-tight sm:placeholder:text-[42px]",
+  button:
+    "px-7 py-5 text-lg max-sm:px-4 max-sm:py-2 max-sm:text-sm sm:px-10 sm:py-6 sm:text-xl",
 };
 
 const InputBox = forwardRef(function InputBox(

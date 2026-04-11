@@ -1,11 +1,13 @@
-import { useMemo, useState, useEffect } from "react";
-import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { useMemo, useState, useEffect, useRef } from "react";
+import { ChevronDown } from "lucide-react";
 import styles from "./styles.module.css";
 import { useApp } from "../../state/appState";
 import PlateInput from "../../components/PlateInput";
+import PaginationBar from "../../components/PaginationBar";
 import NumberCard from "../../components/NumberCard";
 import NumberDetailsModal from "../../components/NumberDetailsModal";
 import { matchPlatePositional } from "../../utils/plateMatch";
+import { dedupePlateRows } from "../../utils/dedupePlateRows";
 
 export default function Catalog() {
   const {
@@ -27,17 +29,11 @@ export default function Catalog() {
     sameLetters: false,
     evenTens010: false,
     evenHundreds: false,
-    onlyAvailable: false,
-    exclusive: false,
     sort: "priceDesc",
   });
 
   const filteredNumbers = useMemo(() => {
     const filtered = numbers
-      .filter((n) => {
-        if (!filters.onlyAvailable) return true;
-        return n.status === "В наличии";
-      })
       .filter((n) => {
         if (!filters.sameDigits) return true;
         const m = n.plate.match(/\d{3}/);
@@ -63,18 +59,6 @@ export default function Catalog() {
         if (!m) return false;
         return /^\d00$/.test(m[0]);
       })
-      .filter((n) => {
-        if (!filters.exclusive) return true;
-        const letters = (n.plate.toUpperCase().match(/[A-ZА-ЯЁ]/g) || []).slice(0, 3);
-        const m = n.plate.match(/\d{3}/);
-        const digits = m ? m[0] : "";
-        const lettersTriple =
-          letters.length === 3 && letters[0] === letters[1] && letters[1] === letters[2];
-        const digitsTriple = digits ? /(\d)\1\1/.test(digits) : false;
-        const specialDigits =
-          digits === "001" || digits === "777" || digits === "888" || digits === "999";
-        return n.price >= 900000 || lettersTriple || digitsTriple || specialDigits;
-      })
       .filter((n) => n.price >= 0);
 
     const hasQueryParts = Object.values(numberQueryParts || {}).some(v => v);
@@ -82,15 +66,41 @@ export default function Catalog() {
     const sorted = [...byQuery].sort((a, b) =>
       filters.sort === "priceAsc" ? a.price - b.price : b.price - a.price
     );
-    return sorted;
+    return dedupePlateRows(sorted);
   }, [numbers, numberQueryParts, filters]);
 
   const ITEMS_PER_PAGE = 12;
   const [currentPage, setCurrentPage] = useState(1);
+  const prevPageForScrollRef = useRef(null);
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [filteredNumbers]);
+  }, [filters, numberQueryParts]);
+
+  useEffect(() => {
+    setCurrentPage((p) => {
+      const maxPage = Math.max(1, Math.ceil(filteredNumbers.length / ITEMS_PER_PAGE));
+      return p > maxPage ? maxPage : p;
+    });
+  }, [filteredNumbers.length]);
+
+  useEffect(() => {
+    const prev = prevPageForScrollRef.current;
+    if (prev === null) {
+      prevPageForScrollRef.current = currentPage;
+      return;
+    }
+    if (prev === currentPage) {
+      return;
+    }
+    prevPageForScrollRef.current = currentPage;
+    const id = window.requestAnimationFrame(() => {
+      document
+        .getElementById("catalog-results-start")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    return () => window.cancelAnimationFrame(id);
+  }, [currentPage]);
 
   const totalPages = Math.max(1, Math.ceil(filteredNumbers.length / ITEMS_PER_PAGE));
   const displayedNumbers = filteredNumbers.slice(
@@ -109,7 +119,7 @@ export default function Catalog() {
 
   return (
     <div className="mx-auto max-w-7xl pb-16">
-      <div className="pt-6 sm:pt-10">
+      <div className="pt-4 sm:pt-10">
         <div className="flex items-end justify-between gap-6">
           <div>
             <h1 className="section-title">Каталог номеров</h1>
@@ -119,7 +129,7 @@ export default function Catalog() {
           </div>
         </div>
 
-        <div className="mt-7">
+        <div className="mt-5 sm:mt-7">
           <PlateInput
             value={numberQuery}
             onChange={setNumberQuery}
@@ -133,8 +143,6 @@ export default function Catalog() {
                 ["sameLetters", "Одинаковые буквы"],
                 ["evenTens010", "Первая десятка"],
                 ["evenHundreds", "Ровные сотни"],
-                ["exclusive", "Эксклюзивные"],
-                ["onlyAvailable", "Свободные"],
               ].map(([key, label]) => (
                 <button
                   key={key}
@@ -183,8 +191,6 @@ export default function Catalog() {
                     sameLetters: false,
                     evenTens010: false,
                     evenHundreds: false,
-                    onlyAvailable: false,
-                    exclusive: false,
                     sort: "priceDesc",
                   }))
                 }
@@ -193,6 +199,14 @@ export default function Catalog() {
               </button>
             </div>
           </div>
+
+          <PaginationBar
+            className="mt-4"
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onGoPrev={() => setCurrentPage((p) => p - 1)}
+            onGoNext={() => setCurrentPage((p) => p + 1)}
+          />
 
           {numbersError ? (
             <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
@@ -207,13 +221,19 @@ export default function Catalog() {
             </p>
           ) : null}
 
+          <div
+            id="catalog-results-start"
+            className="scroll-mt-[5.5rem] sm:scroll-mt-24"
+            aria-hidden
+          />
+
           <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {numbersLoading && numbers.length === 0 ? (
               <div className="col-span-full text-sm text-slate-600">Загрузка каталога…</div>
             ) : (
-              displayedNumbers.map((n) => (
+              displayedNumbers.map((n, idx) => (
                 <NumberCard
-                  key={n.id}
+                  key={`p${currentPage}-i${idx}-${n.id}`}
                   number={n}
                   onDetails={() => setDetails(n)}
                   onBuy={() => setDetails(n)}
@@ -222,29 +242,13 @@ export default function Catalog() {
             )}
           </div>
 
-          {totalPages > 1 && (
-            <div className="mt-8 flex items-center justify-center gap-4">
-              <button
-                type="button"
-                className="btn-ghost flex h-10 w-10 p-0 shrink-0 items-center justify-center rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage((p) => p - 1)}
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-              <div className="text-sm font-medium text-slate-700">
-                Страница {currentPage} из {totalPages}
-              </div>
-              <button
-                type="button"
-                className="btn-ghost flex h-10 w-10 p-0 shrink-0 items-center justify-center rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage((p) => p + 1)}
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
-            </div>
-          )}
+          <PaginationBar
+            className="mt-8"
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onGoPrev={() => setCurrentPage((p) => p - 1)}
+            onGoNext={() => setCurrentPage((p) => p + 1)}
+          />
         </div>
       </div>
 

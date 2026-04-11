@@ -1,3 +1,25 @@
+.messengerIconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 999px;
+}
+
+.messengerIconWrap[data-brand="wa"] {
+  background: #25d366;
+}
+
+.messengerIconWrap[data-brand="tg"] {
+  background: #229ed9;
+}
+
+.messengerIconWrap[data-brand="max"] {
+  overflow: hidden;
+}
+
 .messengerBtn {
   display: inline-flex;
   align-items: center;

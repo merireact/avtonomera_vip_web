@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Heart, Menu, MessageCircle, Phone, Send, X } from "lucide-react";
+import { Mail, Menu, Phone, X } from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import styles from "./styles.module.css";
 import logo from "../../assets/logo.png";
+import maxMessengerIcon from "../../assets/max-messenger.png";
+import { IconTelegram, IconWhatsApp } from "../MessengerIcons";
 
 const nav = [
   { to: "/", label: "Главная" },
@@ -70,14 +72,16 @@ export default function Header() {
         <div className="glass-strong mt-3 flex items-center justify-between gap-4 px-4 py-3 sm:px-5">
           <button
             onClick={() => navigate("/")}
-            className="group flex items-center gap-3"
+            className="group flex min-w-0 items-center gap-3.5 lg:gap-3"
             aria-label="Перейти на главную"
           >
             <span className={styles.logoMark}>
               <img src={logo} alt="Avtonomera Vip" className={styles.logoImg} />
             </span>
-            <div className="leading-tight">
-              <div className="font-display text-lg tracking-tight">Avtonomera Vip</div>
+            <div className="min-w-0 text-left leading-tight">
+              <div className="font-display text-2xl tracking-tight lg:text-lg">
+                Avtonomera Vip
+              </div>
               <div className="hidden text-xs text-slate-600 lg:block">
                 Москва и Московская область
               </div>
@@ -101,33 +105,37 @@ export default function Header() {
 
             <div className="hidden items-center gap-2 lg:flex">
               <a
-                className={styles.iconBtn}
+                href="tel:+79099686474"
+                className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full shadow-sm ring-1 ring-black/10 transition hover:shadow-md"
+                aria-label="Max"
+              >
+                <img
+                  src={maxMessengerIcon}
+                  alt=""
+                  width={36}
+                  height={36}
+                  className="h-full w-full object-cover"
+                  draggable={false}
+                />
+              </a>
+              <a
+                href="https://t.me/avtonomera_vip"
+                target="_blank"
+                rel="noreferrer"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#229ED9] text-white shadow-sm ring-1 ring-black/5 transition hover:brightness-105"
+                aria-label="Telegram"
+              >
+                <IconTelegram className="h-[18px] w-[18px]" />
+              </a>
+              <a
                 href="https://wa.me/79099686474"
                 target="_blank"
                 rel="noreferrer"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#25D366] text-white shadow-sm ring-1 ring-black/5 transition hover:brightness-105"
                 aria-label="WhatsApp"
               >
-                <MessageCircle className="h-4 w-4" />
+                <IconWhatsApp className="h-[18px] w-[18px]" />
               </a>
-              <a
-                className={styles.iconBtn}
-                href="https://t.me/"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Telegram"
-              >
-                <Send className="h-4 w-4" />
-              </a>
-              <button
-                className={styles.iconBtn}
-                onClick={() =>
-                  navigate(location.pathname === "/favorites" ? "/" : "/favorites")
-                }
-                aria-label="Избранное"
-                type="button"
-              >
-                <Heart className="h-4 w-4" />
-              </button>
             </div>
 
             <button
@@ -205,45 +213,64 @@ export default function Header() {
               <div className="border-t border-slate-200/80 px-4 py-4">
                 <a
                   href="tel:+79099686474"
-                  className="mb-4 flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-900"
+                  className="mb-3 flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-900 transition hover:bg-slate-100/90"
                   onClick={() => setMenuOpen(false)}
                 >
                   <Phone className="h-5 w-5 shrink-0 text-brand-600" />
                   +7 (909) 968‑64‑74
                 </a>
-                <p className="mb-2 text-xs text-slate-500">Связь в мессенджерах</p>
+                <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wider text-slate-500">
+                  Почта
+                </p>
+                <a
+                  href="mailto:business.feedback.2000@gmail.com"
+                  className="mb-4 flex items-start gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 transition hover:bg-slate-50"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <Mail className="mt-0.5 h-5 w-5 shrink-0 text-brand-600" />
+                  <span className="min-w-0 break-all text-left leading-snug">
+                    business.feedback.2000@gmail.com
+                  </span>
+                </a>
+                <p className="mb-2 text-[11px] font-medium uppercase tracking-wider text-slate-500">
+                  Мессенджеры
+                </p>
                 <div className="flex flex-wrap gap-2">
                   <a
-                    className={styles.iconBtn}
-                    href="https://wa.me/79099686474"
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="WhatsApp"
+                    href="tel:+79099686474"
+                    className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full shadow-sm ring-1 ring-black/10 transition hover:shadow-md"
+                    aria-label="Max"
                     onClick={() => setMenuOpen(false)}
                   >
-                    <MessageCircle className="h-4 w-4" />
+                    <img
+                      src={maxMessengerIcon}
+                      alt=""
+                      width={40}
+                      height={40}
+                      className="h-full w-full object-cover"
+                      draggable={false}
+                    />
                   </a>
                   <a
-                    className={styles.iconBtn}
-                    href="https://t.me/"
+                    href="https://t.me/avtonomera_vip"
                     target="_blank"
                     rel="noreferrer"
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#229ED9] text-white shadow-sm ring-1 ring-black/5 transition hover:brightness-105"
                     aria-label="Telegram"
                     onClick={() => setMenuOpen(false)}
                   >
-                    <Send className="h-4 w-4" />
+                    <IconTelegram className="h-[18px] w-[18px]" />
                   </a>
-                  <button
-                    type="button"
-                    className={styles.iconBtn}
-                    aria-label="Избранное"
-                    onClick={() => {
-                      setMenuOpen(false);
-                      navigate(location.pathname === "/favorites" ? "/" : "/favorites");
-                    }}
+                  <a
+                    href="https://wa.me/79099686474"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#25D366] text-white shadow-sm ring-1 ring-black/5 transition hover:brightness-105"
+                    aria-label="WhatsApp"
+                    onClick={() => setMenuOpen(false)}
                   >
-                    <Heart className="h-4 w-4" />
-                  </button>
+                    <IconWhatsApp className="h-[18px] w-[18px]" />
+                  </a>
                 </div>
               </div>
             </div>

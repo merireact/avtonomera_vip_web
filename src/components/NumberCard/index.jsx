@@ -16,8 +16,17 @@ export default function NumberCard({ number, onDetails, onBuy }) {
       className="glass p-5"
     >
       <div className="flex items-center justify-between gap-3">
-        <div className="text-xs text-slate-600">{number.status}</div>
-        <div className="text-xs text-slate-500">VIP</div>
+        {number.status !== "В наличии" ? (
+          <div className="text-xs text-slate-600">{number.status}</div>
+        ) : null}
+        <div
+          className={[
+            "text-xs text-slate-500",
+            number.status === "В наличии" ? "ml-auto" : "",
+          ].join(" ")}
+        >
+          VIP
+        </div>
       </div>
 
       <div className="mt-3 font-mono text-[1.75rem] sm:text-3xl font-bold tracking-[0.05em] text-slate-900">

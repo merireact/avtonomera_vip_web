@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Hero from "../../components/Hero";
@@ -8,8 +8,10 @@ import PlateInput from "../../components/PlateInput";
 import NumberDetailsModal from "../../components/NumberDetailsModal";
 import SellNumberModal from "../../components/SellNumberModal";
 import EstimateModal from "../../components/EstimateModal";
-import { ChevronDown, Heart, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronDown, Heart } from "lucide-react";
+import PaginationBar from "../../components/PaginationBar";
 import { matchPlatePositional } from "../../utils/plateMatch";
+import { dedupePlateRows } from "../../utils/dedupePlateRows";
 
 function formatPriceRub(value) {
   return new Intl.NumberFormat("ru-RU", {
@@ -69,8 +71,6 @@ export default function Home() {
     sameLetters: false,
     evenTens010: false,
     evenHundreds: false,
-    onlyAvailable: false,
-    exclusive: false,
     priceMin: null,
     priceMax: null,
     sort: "priceDesc",
@@ -81,10 +81,6 @@ export default function Home() {
 
   const results = useMemo(() => {
     const filtered = numbers
-      .filter((n) => {
-        if (!filters.onlyAvailable) return true;
-        return n.status === "В наличии";
-      })
       .filter((n) => {
         if (!filters.sameDigits) return true;
         const m = n.plate.match(/\d{3}/);
@@ -111,17 +107,6 @@ export default function Home() {
         // формат x00
         return /^\d00$/.test(m[0]);
       })
-      .filter((n) => {
-        if (!filters.exclusive) return true;
-        const letters = (n.plate.toUpperCase().match(/[A-ZА-ЯЁ]/g) || []).slice(0, 3);
-        const m = n.plate.match(/\d{3}/);
-        const digits = m ? m[0] : "";
-        const lettersTriple =
-          letters.length === 3 && letters[0] === letters[1] && letters[1] === letters[2];
-        const digitsTriple = digits ? /(\d)\1\1/.test(digits) : false;
-        const specialDigits = digits === "001" || digits === "777" || digits === "888" || digits === "999";
-        return n.price >= 900000 || lettersTriple || digitsTriple || specialDigits;
-      })
       .filter((n) => n.price >= 0);
 
     const hasQueryParts = Object.values(numberQueryParts || {}).some(v => v);
@@ -129,15 +114,41 @@ export default function Home() {
     const sorted = [...byQuery].sort((a, b) =>
       filters.sort === "priceAsc" ? a.price - b.price : b.price - a.price
     );
-    return sorted;
+    return dedupePlateRows(sorted);
   }, [numbers, numberQueryParts, filters]);
 
   const ITEMS_PER_PAGE = 12;
   const [currentPage, setCurrentPage] = useState(1);
+  const prevPageForScrollRef = useRef(null);
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [results, isSearching]);
+  }, [isSearching, filters, numberQueryParts]);
+
+  useEffect(() => {
+    setCurrentPage((p) => {
+      const maxPage = Math.max(1, Math.ceil(results.length / ITEMS_PER_PAGE));
+      return p > maxPage ? maxPage : p;
+    });
+  }, [results.length]);
+
+  useEffect(() => {
+    const prev = prevPageForScrollRef.current;
+    if (prev === null) {
+      prevPageForScrollRef.current = currentPage;
+      return;
+    }
+    if (prev === currentPage) {
+      return;
+    }
+    prevPageForScrollRef.current = currentPage;
+    const id = window.requestAnimationFrame(() => {
+      document
+        .getElementById("catalog-results-start")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    return () => window.cancelAnimationFrame(id);
+  }, [currentPage]);
 
   const totalPages = Math.max(1, Math.ceil(results.length / ITEMS_PER_PAGE));
   const displayedNumbers = results.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
@@ -159,7 +170,7 @@ export default function Home() {
 
   return (
     <div className={`pb-16 ${styles.homePageRoot}`}>
-      <div className={`pt-4 sm:pt-8 ${styles.homeHeroWrap}`}>
+      <div className={`pt-2 sm:pt-8 ${styles.homeHeroWrap}`}>
         <Hero
           onBuyClick={() => {
             document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
@@ -169,19 +180,16 @@ export default function Home() {
         />
       </div>
 
-      <section id="catalog-section" className={`mx-auto mt-14 max-w-7xl sm:mt-16 ${styles.homeSearchSection}`}>
+      <section id="catalog-section" className={`mx-auto mt-5 max-w-7xl sm:mt-16 ${styles.homeSearchSection}`}>
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
             <h2 className={styles.searchSectionTitle}>
               Поиск <span className={styles.searchSectionAccent}>номеров</span>
             </h2>
-            <p className="mt-3 max-w-2xl text-sm text-slate-600 sm:text-base">
-              Ввод номера, фильтры и карточки — без лишнего шума.
-            </p>
           </div>
         </div>
 
-        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="mt-6">
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="mt-3 sm:mt-6">
           <PlateInput
             value={numberQuery}
             onChange={setNumberQuery}
@@ -197,8 +205,6 @@ export default function Home() {
                 ["sameLetters", "Одинаковые буквы"],
                 ["evenTens010", "Первая десятка"],
                 ["evenHundreds", "Ровные сотни"],
-                ["exclusive", "Эксклюзивные"],
-                ["onlyAvailable", "Свободные"],
               ].map(([key, label]) => (
                 <button
                   key={key}
@@ -246,8 +252,6 @@ export default function Home() {
                     sameLetters: false,
                     evenTens010: false,
                     evenHundreds: false,
-                    onlyAvailable: false,
-                    exclusive: false,
                     priceMin: null,
                     priceMax: null,
                     sort: "priceDesc",
@@ -259,6 +263,15 @@ export default function Home() {
             </div>
           </div>
         </motion.div>
+
+        <PaginationBar
+          className="mt-4"
+          currentPage={currentPage}
+          totalPages={totalPages}
+          hidden={isSearching}
+          onGoPrev={() => setCurrentPage((p) => p - 1)}
+          onGoNext={() => setCurrentPage((p) => p + 1)}
+        />
 
         {numbersError ? (
           <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
@@ -272,18 +285,29 @@ export default function Home() {
           </p>
         ) : null}
 
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div
+          id="catalog-results-start"
+          className="scroll-mt-[5.5rem] sm:scroll-mt-24"
+          aria-hidden
+        />
+
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {isSearching || (numbersLoading && numbers.length === 0)
             ? Array.from({ length: 8 }).map((_, i) => <NumberSkeleton key={i} />)
-            : displayedNumbers.map((n) => (
+            : displayedNumbers.map((n, idx) => (
                 <motion.div
-                  key={n.id}
+                  key={`p${currentPage}-i${idx}-${n.id}`}
                   whileHover={{ y: -3 }}
                   transition={{ duration: 0.25 }}
                   className={styles.numberCard}
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <StatusPill status={n.status} />
+                  <div
+                    className={[
+                      "flex items-center gap-3",
+                      n.status === "В наличии" ? "justify-end" : "justify-between",
+                    ].join(" ")}
+                  >
+                    {n.status !== "В наличии" ? <StatusPill status={n.status} /> : null}
                     <button
                       type="button"
                       className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50"
@@ -325,29 +349,14 @@ export default function Home() {
               ))}
         </div>
 
-        {totalPages > 1 && !isSearching && (
-          <div className="mt-8 flex items-center justify-center gap-4">
-            <button
-              type="button"
-              className="btn-ghost flex h-10 w-10 p-0 shrink-0 items-center justify-center rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((p) => p - 1)}
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <div className="text-sm font-medium text-slate-700">
-              Страница {currentPage} из {totalPages}
-            </div>
-            <button
-              type="button"
-              className="btn-ghost flex h-10 w-10 p-0 shrink-0 items-center justify-center rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((p) => p + 1)}
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </div>
-        )}
+        <PaginationBar
+          className="mt-8"
+          currentPage={currentPage}
+          totalPages={totalPages}
+          hidden={isSearching}
+          onGoPrev={() => setCurrentPage((p) => p - 1)}
+          onGoNext={() => setCurrentPage((p) => p + 1)}
+        />
       </section>
 
       {details ? (

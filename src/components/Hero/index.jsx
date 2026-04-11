@@ -1,10 +1,15 @@
 import { motion } from "framer-motion";
-import { Search, Tag, RefreshCcw, MessageCircle, Send } from "lucide-react";
+import { Phone, Search, Tag, RefreshCcw } from "lucide-react";
+import maxMessengerIcon from "../../assets/max-messenger.png";
+import { IconTelegram, IconWhatsApp } from "../MessengerIcons";
+
+const PHONE_DISPLAY = "+7 (909) 968‑64‑74";
+const PHONE_TEL = "+79099686474";
 
 export default function Hero({ onBuyClick, onSellClick, onTransferClick }) {
   return (
     <section className="mx-auto max-w-7xl">
-      <div className="relative rounded-2xl border border-slate-200/90 bg-white p-8 shadow-[0_1px_0_rgba(15,23,42,.04),0_18px_48px_rgba(15,23,42,.06)] sm:p-10 md:p-12 lg:p-14">
+      <div className="relative min-w-0 overflow-x-clip rounded-2xl border border-slate-200/90 bg-white p-4 shadow-[0_1px_0_rgba(15,23,42,.04),0_18px_48px_rgba(15,23,42,.06)] sm:p-10 md:p-12 lg:p-14">
         <div
           className="pointer-events-none absolute inset-y-0 left-0 w-1 rounded-l-2xl bg-brand-600"
           aria-hidden
@@ -14,79 +19,99 @@ export default function Hero({ onBuyClick, onSellClick, onTransferClick }) {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="relative pl-5 sm:pl-6 md:pl-8"
+          className="relative min-w-0 pl-3 sm:pl-6 md:pl-8"
         >
-          <h1 className="font-display text-[2rem] font-normal leading-[1.1] tracking-tight text-slate-900 sm:text-4xl md:text-5xl lg:text-6xl">
-            <span className="block">Продажа</span>
-            <span className="mt-1 block text-brand-800 sm:mt-1.5">
-              красивых автономеров
+          <div className="mb-4 flex min-w-0 max-w-full items-center gap-1.5 sm:mb-6 sm:gap-2.5 lg:hidden">
+            <div className="flex shrink-0 items-center gap-1 sm:gap-1.5">
+              <a
+                href="https://wa.me/79099686474"
+                target="_blank"
+                rel="noreferrer"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#25D366] text-white transition hover:brightness-105"
+                aria-label="WhatsApp"
+              >
+                <IconWhatsApp className="h-[18px] w-[18px]" />
+              </a>
+              <a
+                href="https://t.me/avtonomera_vip"
+                target="_blank"
+                rel="noreferrer"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#229ED9] text-white transition hover:brightness-105"
+                aria-label="Telegram"
+              >
+                <IconTelegram className="h-[18px] w-[18px]" />
+              </a>
+              <a
+                href={`tel:${PHONE_TEL}`}
+                className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full transition hover:opacity-90"
+                aria-label="Max"
+              >
+                <img
+                  src={maxMessengerIcon}
+                  alt=""
+                  width={32}
+                  height={32}
+                  className="h-full w-full object-cover"
+                  draggable={false}
+                />
+              </a>
+            </div>
+            <a
+              href={`tel:${PHONE_TEL}`}
+              className="flex min-w-0 flex-1 items-center justify-end gap-1 text-slate-900"
+            >
+              <Phone className="h-3.5 w-3.5 shrink-0 text-brand-600 sm:h-4 sm:w-4" strokeWidth={2} aria-hidden />
+              <span className="min-w-0 text-right text-[13px] font-medium tabular-nums leading-none tracking-tight sm:text-sm">
+                {PHONE_DISPLAY}
+              </span>
+            </a>
+          </div>
+
+          <h1 className="font-display text-[1.75rem] font-normal leading-[1.1] tracking-tight text-slate-900 sm:text-4xl md:text-5xl lg:text-6xl">
+            <span className="block">Красивые номера от</span>
+            <span className="mt-1 block text-brand-800 sm:mt-1.5 text-[1.45rem] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
+              Avtonomera Vip
             </span>
           </h1>
 
-          <p className="mt-5 max-w-2xl text-sm leading-relaxed text-slate-600 sm:mt-7 sm:text-base md:text-lg">
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 sm:mt-7 sm:text-base md:text-lg">
             Занимаемся подбором и продажей красивых автономеров в Москве и Московской области для наших клиентов.
             <span className="text-slate-800"> Полностью сопровождаем сделку на каждом этапе.</span>
           </p>
 
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:mt-10 sm:flex sm:flex-row sm:flex-wrap sm:gap-3">
-            <button
-              type="button"
-              className="btn-luxe w-full px-2 py-3.5 text-[13px] sm:text-sm sm:w-auto sm:px-7"
-              onClick={onBuyClick}
-            >
-              <Search className="h-[1.15em] w-[1.15em] shrink-0" strokeWidth={2} aria-hidden />
-              <span className="truncate">Купить номер</span>
-            </button>
-            <button
-              type="button"
-              className={[
-                "inline-flex w-full items-center justify-center gap-1.5 rounded-full px-2 py-3.5 text-[13px] sm:text-sm font-medium tracking-wide text-white transition duration-300 sm:w-auto sm:px-7 sm:gap-2",
-                "bg-[#0c1f33] hover:bg-[#132d4a]",
-                "shadow-[0_0_0_1px_rgba(12,31,51,.35)] hover:-translate-y-px",
-              ].join(" ")}
-              onClick={onSellClick}
-            >
-              <Tag className="h-[1.15em] w-[1.15em] shrink-0" strokeWidth={2} aria-hidden />
-              <span className="truncate">Продать номер</span>
-            </button>
-          </div>
-          <div className="mt-4 flex justify-center sm:justify-start">
-             <button
+          <div className="mt-4 space-y-3 sm:mt-10">
+            <div className="grid grid-cols-2 gap-2 lg:flex lg:flex-nowrap lg:items-center lg:justify-start lg:gap-3">
+              <button
                 type="button"
-                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-bold tracking-wide text-brand-700 bg-brand-50 hover:bg-brand-100 border border-brand-200 transition duration-300"
+                className="btn-luxe min-w-0 gap-1 px-1.5 py-2.5 text-[11px] leading-tight sm:gap-2 sm:px-7 sm:py-3.5 sm:text-sm lg:w-auto lg:max-w-none"
+                onClick={onBuyClick}
+              >
+                <Search className="h-[1.1em] w-[1.1em] shrink-0 sm:h-[1.15em] sm:w-[1.15em]" strokeWidth={2} aria-hidden />
+                <span className="text-center">Купить номер</span>
+              </button>
+              <button
+                type="button"
+                className={[
+                  "inline-flex min-w-0 items-center justify-center gap-1 rounded-full px-1.5 py-2.5 text-[11px] leading-tight font-medium tracking-wide text-white transition duration-300 sm:gap-2 sm:px-7 sm:py-3.5 sm:text-sm lg:w-auto",
+                  "bg-[#0c1f33] hover:bg-[#132d4a]",
+                  "shadow-[0_0_0_1px_rgba(12,31,51,.35)] hover:-translate-y-px",
+                ].join(" ")}
+                onClick={onSellClick}
+              >
+                <Tag className="h-[1.1em] w-[1.1em] shrink-0 sm:h-[1.15em] sm:w-[1.15em]" strokeWidth={2} aria-hidden />
+                <span className="text-center">Продать номер</span>
+              </button>
+            </div>
+            <div className="flex justify-center sm:justify-start lg:pt-0">
+              <button
+                type="button"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-bold tracking-wide text-brand-700 bg-brand-50 hover:bg-brand-100 border border-brand-200 transition duration-300 sm:w-auto"
                 onClick={onTransferClick}
               >
                 <RefreshCcw className="h-[1.15em] w-[1.15em] shrink-0" strokeWidth={2.5} aria-hidden />
                 Переоформление
               </button>
-          </div>
-
-          <div className="mt-6 flex flex-col gap-2 sm:hidden">
-            <a
-              href="https://wa.me/79099686474"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366]/10 px-4 py-3 text-sm font-medium text-[#075E54] transition hover:bg-[#25D366]/20"
-            >
-              <MessageCircle className="h-4 w-4" />
-              Написать в WhatsApp
-            </a>
-            <a
-              href="https://t.me/"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#0088cc]/10 px-4 py-3 text-sm font-medium text-[#006699] transition hover:bg-[#0088cc]/20"
-            >
-              <Send className="h-4 w-4" />
-              Написать в Telegram
-            </a>
-            <button
-              type="button"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-100 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-200"
-            >
-              <Send className="h-4 w-4" />
-              Написать в Max
-            </button>
+            </div>
           </div>
         </motion.div>
       </div>
