@@ -7,7 +7,7 @@ const PHONE_DISPLAY = "+7 (909) 968‑64‑74";
 const PHONE_TEL = "+79099686474";
 
 const mobileActionBlock =
-  "flex min-h-[5.25rem] flex-col items-center justify-center gap-2 rounded-2xl border border-slate-200/90 bg-white px-3 py-4 text-center shadow-[0_1px_0_rgba(15,23,42,.04)] transition active:scale-[0.99] sm:min-h-0";
+  "flex min-h-[5.25rem] flex-col items-center justify-center gap-3 rounded-2xl border border-slate-200/90 bg-white px-3 py-4 text-center shadow-[0_1px_0_rgba(15,23,42,.04)] transition active:scale-[0.99] sm:min-h-0";
 
 export default function Hero({ onBuyClick, onSellClick, onTransferClick }) {
   return (
@@ -85,14 +85,14 @@ export default function Hero({ onBuyClick, onSellClick, onTransferClick }) {
 
           {/* Мобильный: блоки — купить | продать в один ряд, переоформление снизу */}
           <div className="mt-6 space-y-3 lg:hidden">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-4">
               <button type="button" className={mobileActionBlock} onClick={onBuyClick}>
-                <Search className="h-5 w-5 shrink-0 text-brand-700" strokeWidth={2} aria-hidden />
-                <span className="text-[11px] font-semibold leading-tight text-slate-900">Купить номер</span>
+                <Search className="h-6 w-6 shrink-0 text-brand-700" strokeWidth={2} aria-hidden />
+                <span className="text-sm font-semibold leading-tight text-slate-900">Купить номер</span>
               </button>
               <button type="button" className={mobileActionBlock} onClick={onSellClick}>
-                <Tag className="h-5 w-5 shrink-0 text-[#0c1f33]" strokeWidth={2} aria-hidden />
-                <span className="text-[11px] font-semibold leading-tight text-slate-900">Продать номер</span>
+                <Tag className="h-6 w-6 shrink-0 text-[#0c1f33]" strokeWidth={2} aria-hidden />
+                <span className="text-sm font-semibold leading-tight text-slate-900">Продать номер</span>
               </button>
             </div>
             <button
@@ -111,25 +111,25 @@ export default function Hero({ onBuyClick, onSellClick, onTransferClick }) {
 
           {/* Десктоп: прежние кнопки */}
           <div className="mt-4 hidden space-y-3 sm:mt-10 lg:block">
-            <div className="grid grid-cols-2 gap-2 lg:flex lg:flex-nowrap lg:items-center lg:justify-start lg:gap-3">
+            <div className="grid grid-cols-2 gap-3 lg:flex lg:flex-nowrap lg:items-center lg:justify-start lg:gap-4">
               <button
                 type="button"
-                className="btn-luxe min-w-0 gap-1 px-1.5 py-2.5 text-[11px] leading-tight sm:gap-2 sm:px-7 sm:py-3.5 sm:text-sm lg:w-auto lg:max-w-none"
+                className="btn-luxe min-w-0 gap-2 px-1.5 py-2.5 text-sm leading-tight sm:gap-3 sm:px-7 sm:py-3.5 sm:text-base lg:w-auto lg:max-w-none"
                 onClick={onBuyClick}
               >
-                <Search className="h-[1.1em] w-[1.1em] shrink-0 sm:h-[1.15em] sm:w-[1.15em]" strokeWidth={2} aria-hidden />
+                <Search className="h-[1.15em] w-[1.15em] shrink-0 sm:h-[1.2em] sm:w-[1.2em]" strokeWidth={2} aria-hidden />
                 <span className="text-center">Купить номер</span>
               </button>
               <button
                 type="button"
                 className={[
-                  "inline-flex min-w-0 items-center justify-center gap-1 rounded-full px-1.5 py-2.5 text-[11px] leading-tight font-medium tracking-wide text-white transition duration-300 sm:gap-2 sm:px-7 sm:py-3.5 sm:text-sm lg:w-auto",
+                  "inline-flex min-w-0 items-center justify-center gap-2 rounded-full px-1.5 py-2.5 text-sm leading-tight font-medium tracking-wide text-white transition duration-300 sm:gap-3 sm:px-7 sm:py-3.5 sm:text-base lg:w-auto",
                   "bg-[#0c1f33] hover:bg-[#132d4a]",
                   "shadow-[0_0_0_1px_rgba(12,31,51,.35)] hover:-translate-y-px",
                 ].join(" ")}
                 onClick={onSellClick}
               >
-                <Tag className="h-[1.1em] w-[1.1em] shrink-0 sm:h-[1.15em] sm:w-[1.15em]" strokeWidth={2} aria-hidden />
+                <Tag className="h-[1.15em] w-[1.15em] shrink-0 sm:h-[1.2em] sm:w-[1.2em]" strokeWidth={2} aria-hidden />
                 <span className="text-center">Продать номер</span>
               </button>
             </div>

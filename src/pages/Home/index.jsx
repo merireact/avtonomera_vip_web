@@ -9,7 +9,7 @@ import NumberDetailsModal from "../../components/NumberDetailsModal";
 import BuyNumberModal from "../../components/BuyNumberModal";
 import SellNumberModal from "../../components/SellNumberModal";
 import EstimateModal from "../../components/EstimateModal";
-import { ChevronDown, Heart } from "lucide-react";
+import { ChevronDown, FilterX, Heart } from "lucide-react";
 import PaginationBar from "../../components/PaginationBar";
 import { matchPlatePositional } from "../../utils/plateMatch";
 import { dedupePlateRows } from "../../utils/dedupePlateRows";
@@ -175,7 +175,9 @@ export default function Home() {
       <div className={`pt-2 sm:pt-8 ${styles.homeHeroWrap}`}>
         <Hero
           onBuyClick={() => {
-            document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+            document
+              .getElementById("catalog-results-start")
+              ?.scrollIntoView({ behavior: "smooth", block: "start" });
           }}
           onSellClick={() => setSellOpen(true)}
           onTransferClick={() => navigate("/transfer")}
@@ -201,7 +203,7 @@ export default function Home() {
           />
 
           <div className="mt-4 grid gap-3">
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {[
                 ["sameDigits", "Одинаковые цифры"],
                 ["sameLetters", "Одинаковые буквы"],
@@ -212,7 +214,7 @@ export default function Home() {
                   key={key}
                   type="button"
                   className={[
-                    "btn-ghost px-4 py-2",
+                    "btn-ghost px-2.5 py-1.5 text-[11px] leading-tight sm:px-4 sm:py-2 sm:text-sm sm:leading-normal",
                     filters[key] ? "border-brand-600 text-brand-700" : "",
                   ].join(" ")}
                   onClick={() => setFilters((p) => ({ ...p, [key]: !p[key] }))}
@@ -246,7 +248,12 @@ export default function Home() {
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
-                className="btn-ghost px-5 py-3"
+                className={[
+                  "group inline-flex items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-xs font-medium transition sm:gap-2 sm:px-5 sm:py-2.5 sm:text-sm",
+                  "border-slate-200/90 bg-white text-slate-800 shadow-[0_1px_0_rgba(15,23,42,.04)]",
+                  "hover:border-brand-300 hover:bg-brand-50/80 hover:text-brand-900",
+                  "active:scale-[0.99]",
+                ].join(" ")}
                 onClick={() =>
                   setFilters((p) => ({
                     ...p,
@@ -260,6 +267,11 @@ export default function Home() {
                   }))
                 }
               >
+                <FilterX
+                  className="h-3.5 w-3.5 shrink-0 text-brand-600/90 transition group-hover:text-brand-700 sm:h-4 sm:w-4"
+                  strokeWidth={2}
+                  aria-hidden
+                />
                 Сбросить фильтры
               </button>
             </div>

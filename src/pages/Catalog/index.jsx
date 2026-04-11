@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect, useRef } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, FilterX } from "lucide-react";
 import styles from "./styles.module.css";
 import { useApp } from "../../state/appState";
 import PlateInput from "../../components/PlateInput";
@@ -139,7 +139,7 @@ export default function Catalog() {
             onSubmit={() => {}}
           />
           <div className="mt-4 grid gap-3">
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {[
                 ["sameDigits", "Одинаковые цифры"],
                 ["sameLetters", "Одинаковые буквы"],
@@ -150,7 +150,7 @@ export default function Catalog() {
                   key={key}
                   type="button"
                   className={[
-                    "btn-ghost px-4 py-2",
+                    "btn-ghost px-2.5 py-1.5 text-[11px] leading-tight sm:px-4 sm:py-2 sm:text-sm sm:leading-normal",
                     filters[key] ? "border-brand-600 text-brand-700" : "",
                   ].join(" ")}
                   onClick={() => setFilters((p) => ({ ...p, [key]: !p[key] }))}
@@ -181,11 +181,16 @@ export default function Catalog() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 gap-y-2 sm:gap-3">
               <div className={styles.count}>{filteredNumbers.length}</div>
               <button
                 type="button"
-                className="btn-ghost px-4 py-2"
+                className={[
+                  "group inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full border px-2.5 py-1.5 text-[11px] font-medium transition sm:gap-2 sm:px-4 sm:py-2 sm:text-sm",
+                  "border-slate-200/90 bg-white text-slate-800 shadow-[0_1px_0_rgba(15,23,42,.04)]",
+                  "hover:border-brand-300 hover:bg-brand-50/80 hover:text-brand-900",
+                  "active:scale-[0.99]",
+                ].join(" ")}
                 onClick={() =>
                   setFilters((p) => ({
                     ...p,
@@ -197,7 +202,13 @@ export default function Catalog() {
                   }))
                 }
               >
-                Сбросить
+                <FilterX
+                  className="h-3.5 w-3.5 shrink-0 text-brand-600/90 transition group-hover:text-brand-700 sm:h-4 sm:w-4"
+                  strokeWidth={2}
+                  aria-hidden
+                />
+                <span className="sm:hidden">Сбросить</span>
+                <span className="hidden sm:inline">Сбросить фильтры</span>
               </button>
             </div>
           </div>

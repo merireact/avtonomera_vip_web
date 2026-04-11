@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import Footer from "./components/Footer";
@@ -20,6 +21,16 @@ const pageVariants = {
   enter: { opacity: 1, y: 0, filter: "blur(0px)" },
   exit: { opacity: 0, y: -10, filter: "blur(6px)" },
 };
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
 
 function Page({ children }) {
   return (
@@ -56,7 +67,9 @@ function PublicSite() {
 
 export default function App() {
   return (
-    <Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin" element={<RequireManager />}>
         <Route element={<AdminLayout />}>
@@ -118,5 +131,6 @@ export default function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
+    </>
   );
 }
