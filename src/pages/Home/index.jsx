@@ -6,6 +6,7 @@ import styles from "./styles.module.css";
 import { useApp } from "../../state/appState";
 import PlateInput from "../../components/PlateInput";
 import NumberDetailsModal from "../../components/NumberDetailsModal";
+import BuyNumberModal from "../../components/BuyNumberModal";
 import SellNumberModal from "../../components/SellNumberModal";
 import EstimateModal from "../../components/EstimateModal";
 import { ChevronDown, Heart } from "lucide-react";
@@ -76,6 +77,7 @@ export default function Home() {
     sort: "priceDesc",
   });
   const [details, setDetails] = useState(null);
+  const [buyTarget, setBuyTarget] = useState(null);
   const [sellOpen, setSellOpen] = useState(false);
   const [estimateOpen, setEstimateOpen] = useState(false);
 
@@ -340,7 +342,7 @@ export default function Home() {
                     <button
                       type="button"
                       className="btn-luxe flex-1 px-4 py-2"
-                      onClick={() => setDetails(n)}
+                      onClick={() => setBuyTarget(n)}
                     >
                       Купить
                     </button>
@@ -368,6 +370,10 @@ export default function Home() {
           onToggleFavorite={() => toggleFavorite(details.id)}
           onClose={() => setDetails(null)}
         />
+      ) : null}
+
+      {buyTarget ? (
+        <BuyNumberModal number={buyTarget} onClose={() => setBuyTarget(null)} />
       ) : null}
 
       {sellOpen ? (

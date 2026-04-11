@@ -6,6 +6,7 @@ import PlateInput from "../../components/PlateInput";
 import PaginationBar from "../../components/PaginationBar";
 import NumberCard from "../../components/NumberCard";
 import NumberDetailsModal from "../../components/NumberDetailsModal";
+import BuyNumberModal from "../../components/BuyNumberModal";
 import { matchPlatePositional } from "../../utils/plateMatch";
 import { dedupePlateRows } from "../../utils/dedupePlateRows";
 
@@ -24,6 +25,7 @@ export default function Catalog() {
   } = useApp();
 
   const [details, setDetails] = useState(null);
+  const [buyTarget, setBuyTarget] = useState(null);
   const [filters, setFilters] = useState({
     sameDigits: false,
     sameLetters: false,
@@ -236,7 +238,7 @@ export default function Catalog() {
                   key={`p${currentPage}-i${idx}-${n.id}`}
                   number={n}
                   onDetails={() => setDetails(n)}
-                  onBuy={() => setDetails(n)}
+                  onBuy={() => setBuyTarget(n)}
                 />
               ))
             )}
@@ -261,6 +263,10 @@ export default function Catalog() {
           onToggleFavorite={() => toggleFavorite(details.id)}
           onClose={() => setDetails(null)}
         />
+      ) : null}
+
+      {buyTarget ? (
+        <BuyNumberModal number={buyTarget} onClose={() => setBuyTarget(null)} />
       ) : null}
     </div>
   );

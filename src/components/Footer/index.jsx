@@ -119,12 +119,17 @@ export default function Footer() {
           </p>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className={styles.copyright}>© {new Date().getFullYear()} Avtonomera Vip</p>
-            <NavLink
-              to="/admin/login"
-              className="text-xs text-slate-500 transition hover:text-slate-300"
-            >
-              Для сотрудников
-            </NavLink>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+              <NavLink to="/" className="text-slate-500 transition hover:text-slate-300">
+                Вернуться на сайт
+              </NavLink>
+              <NavLink
+                to="/admin/login"
+                className="text-slate-500 transition hover:text-slate-300"
+              >
+                Для сотрудников
+              </NavLink>
+            </div>
           </div>
         </div>
       </div>
