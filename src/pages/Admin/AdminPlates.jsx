@@ -129,7 +129,7 @@ export default function AdminPlates() {
       ) : null}
 
       <form
-        className="mt-8 grid gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:grid-cols-2 lg:grid-cols-4"
+        className="mt-8 grid gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-2 sm:p-6 lg:grid-cols-4"
         onSubmit={addSubmit}
       >
         <label className="grid gap-1 sm:col-span-2">
@@ -168,13 +168,95 @@ export default function AdminPlates() {
           </select>
         </label>
         <div className="flex items-end sm:col-span-2 lg:col-span-4">
-          <button type="submit" className="btn-luxe px-6 py-3 disabled:opacity-50" disabled={saving}>
+          <button type="submit" className="btn-luxe w-full px-6 py-3 disabled:opacity-50 sm:w-auto" disabled={saving}>
             Добавить номер
           </button>
         </div>
       </form>
 
-      <div className="mt-10 overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="mt-10 md:hidden">
+        {loading ? (
+          <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-600 shadow-sm">
+            Загрузка…
+          </div>
+        ) : (
+          <div className="grid gap-3">
+            {rows.map((r) => (
+              <article key={r.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div className="font-mono text-lg font-semibold text-slate-900">{r.plate}</div>
+                <label className="mt-3 grid gap-1">
+                  <span className="text-xs text-slate-500">Цена (₽)</span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    defaultValue={r.price}
+                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                    onBlur={(e) => {
+                      const v = Number(String(e.target.value).replace(/\s/g, "").replace(",", "."));
+                      if (!Number.isNaN(v) && v >= 0 && v !== Number(r.price)) {
+                        updateRow(r.id, { price: v });
+                      }
+                    }}
+                  />
+                </label>
+                <label className="mt-3 grid gap-1">
+                  <span className="text-xs text-slate-500">Статус</span>
+                  <select
+                    defaultValue={r.status}
+                    className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                    onChange={(e) => updateRow(r.id, { status: e.target.value })}
+                  >
+                    {STATUSES.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  {r.image_url ? (
+                    <img src={r.image_url} alt="" className="h-12 w-20 rounded object-cover" />
+                  ) : (
+                    <span className="text-xs text-slate-400">нет фото</span>
+                  )}
+                  <label className="cursor-pointer text-xs text-brand-700 hover:underline">
+                    загрузить
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      disabled={saving}
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        e.target.value = "";
+                        if (f) onImagePick(r.id, f);
+                      }}
+                    />
+                  </label>
+                  {r.image_url ? (
+                    <button
+                      type="button"
+                      className="text-xs text-rose-700 hover:underline"
+                      onClick={() => clearImage(r.id)}
+                    >
+                      сбросить
+                    </button>
+                  ) : null}
+                </div>
+                <button
+                  type="button"
+                  className="mt-4 text-xs text-rose-700 hover:underline"
+                  onClick={() => removeRow(r.id)}
+                >
+                  Удалить
+                </button>
+              </article>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="mt-10 hidden overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm md:block">
         {loading ? (
           <div className="p-8 text-center text-slate-600">Загрузка…</div>
         ) : (

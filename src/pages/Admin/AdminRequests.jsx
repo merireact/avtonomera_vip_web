@@ -23,6 +23,27 @@ function truncate(s, n = 80) {
   return t.length <= n ? t : `${t.slice(0, n)}…`;
 }
 
+function formatDate(value) {
+  if (!value) return "—";
+  return new Date(value).toLocaleString("ru-RU", {
+    dateStyle: "short",
+    timeStyle: "short",
+  });
+}
+
+function StatusSelect({ value, onChange }) {
+  return (
+    <select
+      value={value}
+      className="w-full rounded-lg border border-slate-200 px-2 py-1 text-xs sm:w-auto"
+      onChange={(e) => onChange(e.target.value)}
+    >
+      <option value="new">Новая</option>
+      <option value="done">Обработана</option>
+    </select>
+  );
+}
+
 export default function AdminRequests() {
   const [tab, setTab] = useState("sell");
   const [rows, setRows] = useState([]);
@@ -76,13 +97,13 @@ export default function AdminRequests() {
         отмечайте как обработанные после ответа клиенту.
       </p>
 
-      <div className="mt-6 flex flex-wrap gap-2 border-b border-slate-200 pb-1">
+      <div className="mt-6 flex gap-2 overflow-x-auto border-b border-slate-200 pb-1 [-webkit-overflow-scrolling:touch]">
         {TABS.map((t) => (
           <button
             key={t.id}
             type="button"
             className={[
-              "rounded-t-lg px-4 py-2 text-sm font-medium transition",
+              "shrink-0 rounded-t-lg px-4 py-2 text-sm font-medium transition",
               tab === t.id
                 ? "bg-white text-brand-800 ring-1 ring-slate-200 ring-b-white"
                 : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
@@ -100,7 +121,48 @@ export default function AdminRequests() {
         </div>
       ) : null}
 
-      <div className="mt-6 overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+      {loading || rows.length === 0 ? (
+        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-600 shadow-sm md:hidden">
+          {loading ? "Загрузка…" : "Пока нет заявок в этой категории."}
+        </div>
+      ) : (
+        <div className="mt-6 grid gap-3 md:hidden">
+          {rows.map((r) => (
+            <article key={r.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="text-xs text-slate-500">{formatDate(r.created_at)}</div>
+              {tab === "buy" ? (
+                <div className="mt-1 font-mono text-base font-semibold text-slate-900">{r.plate}</div>
+              ) : null}
+              <div className="mt-2 text-sm font-medium text-slate-900">{r.name || "—"}</div>
+              <a href={r.phone ? `tel:+${String(r.phone).replace(/\D+/g, "")}` : undefined} className="mt-1 block font-mono text-sm text-brand-800">
+                {r.phone || "—"}
+              </a>
+              {tab === "sell" ? (
+                <div className="mt-2 font-mono text-xs text-slate-700">{r.plate || "—"}</div>
+              ) : null}
+              {tab === "selection" ? (
+                <p className="mt-2 text-xs leading-relaxed text-slate-700">{r.wish || "—"}</p>
+              ) : null}
+              {tab === "buy" && r.note ? (
+                <p className="mt-2 text-xs leading-relaxed text-slate-700">{r.note}</p>
+              ) : null}
+              <div className="mt-2 text-xs text-slate-500">{formatMethods(r.contact_methods)}</div>
+              <div className="mt-3 flex items-center justify-between gap-3">
+                <StatusSelect value={r.status} onChange={(status) => setStatus(r.id, status)} />
+                <button
+                  type="button"
+                  className="text-xs text-rose-700 hover:underline"
+                  onClick={() => remove(r.id)}
+                >
+                  Удалить
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-6 hidden overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm md:block">
         {loading ? (
           <div className="p-8 text-center text-slate-600">Загрузка…</div>
         ) : rows.length === 0 ? (

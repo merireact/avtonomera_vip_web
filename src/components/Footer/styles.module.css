@@ -2,6 +2,7 @@
   position: relative;
   margin-top: auto;
   overflow: hidden;
+  padding-bottom: env(safe-area-inset-bottom);
   background: linear-gradient(
     180deg,
     rgb(15 23 42) 0%,
@@ -150,5 +151,10 @@
 .copyright {
   font-size: 0.75rem;
   color: rgba(148, 163, 184, 0.85);
-  white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+  .copyright {
+    white-space: nowrap;
+  }
 }

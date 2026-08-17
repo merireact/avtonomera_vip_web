@@ -90,7 +90,7 @@ export default function AdminReviews() {
       ) : null}
 
       <form
-        className="mt-8 grid max-w-xl gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+        className="mt-8 grid max-w-xl gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6"
         onSubmit={addSubmit}
       >
         <h2 className="text-sm font-medium text-slate-800">Добавить отзыв</h2>
@@ -117,7 +117,7 @@ export default function AdminReviews() {
             required
           />
         </label>
-        <button type="submit" className="btn-luxe w-max px-6 py-3 disabled:opacity-50" disabled={saving}>
+        <button type="submit" className="btn-luxe w-full px-6 py-3 disabled:opacity-50 sm:w-max" disabled={saving}>
           Добавить
         </button>
       </form>

@@ -62,14 +62,14 @@ export default function Favorites() {
         </p>
 
         {favNumbers.length === 0 ? (
-          <div className="mt-8 glass p-10 text-center text-slate-600">
+          <div className="mt-8 glass p-6 text-center text-slate-600 sm:p-10">
             Пока пусто. Добавьте номер в избранное в каталоге.
           </div>
         ) : (
           <>
           <div
             id="catalog-results-start"
-            className="scroll-mt-[5.5rem] sm:scroll-mt-24"
+            className="scroll-mt-[calc(5.5rem+env(safe-area-inset-top))] sm:scroll-mt-24"
             aria-hidden
           />
           <PaginationBar

@@ -1,18 +1,20 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../../state/authState";
+import { useSiteGate } from "../../state/siteGateState";
 
 const tabClass = ({ isActive }) =>
   [
-    "rounded-xl px-4 py-2 text-sm font-medium transition",
+    "shrink-0 rounded-xl px-4 py-2 text-sm font-medium transition",
     isActive ? "bg-brand-600 text-white" : "text-slate-700 hover:bg-slate-100",
   ].join(" ");
 
 export default function AdminLayout() {
   const navigate = useNavigate();
   const { signOut } = useAuth();
+  const { isConfigured, lock } = useSiteGate();
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-[100dvh] bg-slate-100 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4">
           <div>
@@ -34,9 +36,18 @@ export default function AdminLayout() {
             >
               Выйти
             </button>
+            {isConfigured ? (
+              <button
+                type="button"
+                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-800 hover:bg-slate-50"
+                onClick={lock}
+              >
+                Закрыть сайт
+              </button>
+            ) : null}
           </div>
         </div>
-        <nav className="mx-auto flex max-w-6xl flex-wrap gap-2 border-t border-slate-100 px-4 py-3">
+        <nav className="mx-auto flex max-w-6xl gap-2 overflow-x-auto border-t border-slate-100 px-4 py-3 [-webkit-overflow-scrolling:touch]">
           <NavLink to="/admin/plates" className={tabClass} end>
             Номера
           </NavLink>
@@ -48,7 +59,7 @@ export default function AdminLayout() {
           </NavLink>
         </nav>
       </header>
-      <main className="mx-auto max-w-6xl px-4 py-8">
+      <main className="mx-auto max-w-6xl px-4 py-6 sm:py-8">
         <Outlet />
       </main>
     </div>

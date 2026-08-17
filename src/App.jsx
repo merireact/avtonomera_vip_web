@@ -40,7 +40,7 @@ function Page({ children }) {
       animate="enter"
       exit="exit"
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className="px-4 sm:px-6 lg:px-10"
+      className="px-3 sm:px-6 lg:px-10"
     >
       {children}
     </motion.div>
@@ -54,7 +54,7 @@ function PublicSite() {
     <div className="app-shell">
       <Header />
 
-      <div className="flex-1 pt-20 sm:pt-24">
+      <div className="flex-1 pt-[calc(4.75rem+env(safe-area-inset-top))] sm:pt-[calc(6rem+env(safe-area-inset-top))]">
         <AnimatePresence mode="wait" initial={false}>
           <Outlet key={location.pathname + location.search} />
         </AnimatePresence>

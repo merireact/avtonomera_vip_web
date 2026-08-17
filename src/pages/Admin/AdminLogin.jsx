@@ -25,7 +25,7 @@ export default function AdminLogin() {
 
   if (!configured) {
     return (
-      <div className="mx-auto flex min-h-screen max-w-lg flex-col justify-center px-4 py-10">
+      <div className="mx-auto flex min-h-[100dvh] max-w-lg flex-col justify-center px-4 py-10 pt-[max(2.5rem,env(safe-area-inset-top))] pb-[max(2.5rem,env(safe-area-inset-bottom))]">
         <div className="mb-6">
           <BackToSiteLink />
         </div>
@@ -80,7 +80,7 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4 py-12">
+    <div className="mx-auto flex min-h-[100dvh] max-w-md flex-col justify-center px-4 py-12 pt-[max(2.5rem,env(safe-area-inset-top))] pb-[max(2.5rem,env(safe-area-inset-bottom))]">
       <div className="mb-6">
         <BackToSiteLink />
       </div>

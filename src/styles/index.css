@@ -11,10 +11,20 @@
   html,
   body {
     height: 100%;
+    min-height: 100dvh;
   }
 
   body {
     @apply bg-white text-slate-900 font-sans antialiased;
+    overflow-x: clip;
+  }
+
+  @media (max-width: 639px) {
+    input,
+    select,
+    textarea {
+      font-size: 16px;
+    }
   }
 
   *::selection {
@@ -24,8 +34,9 @@
 
 @layer components {
   .app-shell {
-    @apply min-h-screen flex flex-col;
+    @apply flex min-h-[100dvh] flex-col;
     background-image: theme("backgroundImage.luxeRadial");
+    overflow-x: clip;
   }
 
   .glass {
@@ -47,10 +58,12 @@
     box-shadow: 0 0 0 1px rgba(193, 0, 26, 0.18), 0 14px 40px rgba(193, 0, 26, 0.18);
   }
 
-  .btn-luxe:hover {
-    box-shadow: 0 0 0 1px rgba(193, 0, 26, 0.26), 0 0 24px rgba(193, 0, 26, 0.14),
-      0 16px 46px rgba(193, 0, 26, 0.20);
-    transform: translateY(-1px);
+  @media (hover: hover) {
+    .btn-luxe:hover {
+      box-shadow: 0 0 0 1px rgba(193, 0, 26, 0.26), 0 0 24px rgba(193, 0, 26, 0.14),
+        0 16px 46px rgba(193, 0, 26, 0.20);
+      transform: translateY(-1px);
+    }
   }
 
   .btn-ghost {
@@ -58,14 +71,16 @@
     @apply bg-white border border-slate-200 text-slate-900;
   }
 
-  .btn-ghost:hover {
-    @apply border-slate-300 bg-slate-50;
-    box-shadow: 0 0 0 1px rgba(193, 0, 26, 0.10), 0 0 22px rgba(193, 0, 26, 0.08);
-    transform: translateY(-1px);
+  @media (hover: hover) {
+    .btn-ghost:hover {
+      @apply border-slate-300 bg-slate-50;
+      box-shadow: 0 0 0 1px rgba(193, 0, 26, 0.10), 0 0 22px rgba(193, 0, 26, 0.08);
+      transform: translateY(-1px);
+    }
   }
 
   .section-title {
-    @apply font-display text-3xl sm:text-4xl tracking-tight;
+    @apply font-display text-[1.75rem] leading-tight tracking-tight sm:text-4xl;
   }
 
   .muted {

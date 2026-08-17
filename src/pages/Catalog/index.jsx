@@ -236,7 +236,7 @@ export default function Catalog() {
 
           <div
             id="catalog-results-start"
-            className="scroll-mt-[5.5rem] sm:scroll-mt-24"
+            className="scroll-mt-[calc(5.5rem+env(safe-area-inset-top))] sm:scroll-mt-24"
             aria-hidden
           />
 

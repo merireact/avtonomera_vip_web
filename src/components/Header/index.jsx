@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Menu, Phone, X } from "lucide-react";
+import { LogOut, Mail, Menu, Phone, X } from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import styles from "./styles.module.css";
 import logo from "../../assets/logo.png";
 import maxMessengerIcon from "../../assets/max-messenger.png";
 import { IconTelegram, IconWhatsApp } from "../MessengerIcons";
+import { useSiteGate } from "../../state/siteGateState";
 
 const nav = [
   { to: "/", label: "Главная" },
@@ -36,6 +37,7 @@ function NavItem({ to, label }) {
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isConfigured, lock } = useSiteGate();
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -66,20 +68,20 @@ export default function Header() {
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed inset-x-0 top-0 z-50 px-4 sm:px-6 lg:px-10"
+      className="fixed inset-x-0 top-0 z-50 px-3 pt-[env(safe-area-inset-top)] sm:px-6 lg:px-10"
     >
       <div className="mx-auto max-w-7xl">
-        <div className="glass-strong mt-3 flex items-center justify-between gap-4 px-4 py-3 sm:px-5">
+        <div className="glass-strong mt-2 flex items-center justify-between gap-2 px-3 py-2.5 sm:mt-3 sm:gap-4 sm:px-5 sm:py-3">
           <button
             onClick={() => navigate("/")}
-            className="group flex min-w-0 items-center gap-3.5 lg:gap-3"
+            className="group flex min-w-0 items-center gap-2.5 sm:gap-3.5 lg:gap-3"
             aria-label="Перейти на главную"
           >
             <span className={styles.logoMark}>
               <img src={logo} alt="Avtonomera Vip" className={styles.logoImg} />
             </span>
             <div className="min-w-0 text-left leading-tight">
-              <div className="font-display text-2xl tracking-tight lg:text-lg">
+              <div className="font-display truncate text-lg tracking-tight sm:text-2xl lg:text-lg">
                 Avtonomera Vip
               </div>
               <div className="hidden text-xs text-slate-600 lg:block">
@@ -138,12 +140,23 @@ export default function Header() {
               </a>
             </div>
 
+            {isConfigured ? (
+              <button
+                type="button"
+                className="hidden items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 transition hover:bg-slate-50 lg:inline-flex"
+                onClick={lock}
+              >
+                <LogOut className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
+                Выйти
+              </button>
+            ) : null}
+
             <button
               type="button"
               id="mobile-menu-trigger"
               className={[
-                "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white",
-                "text-slate-800 transition hover:bg-slate-50 lg:hidden",
+                "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white",
+                "text-slate-800 transition hover:bg-slate-50 sm:h-11 sm:w-11 lg:hidden",
               ].join(" ")}
               aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"}
               aria-expanded={menuOpen}
@@ -173,6 +186,7 @@ export default function Header() {
           className={[
             "fixed inset-y-0 right-0 z-[150] flex w-[min(100%,20rem)] flex-col border-l border-slate-200/80",
             "bg-white/95 shadow-[-12px_0_40px_rgba(15,23,42,.12)] backdrop-blur-md lg:hidden",
+            "pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]",
           ].join(" ")}
         >
               <div className="flex items-center justify-between gap-3 border-b border-slate-200/80 px-4 py-4">
@@ -272,6 +286,19 @@ export default function Header() {
                     <IconWhatsApp className="h-[18px] w-[18px]" />
                   </a>
                 </div>
+                {isConfigured ? (
+                  <button
+                    type="button"
+                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      lock();
+                    }}
+                  >
+                    <LogOut className="h-4 w-4" strokeWidth={2} aria-hidden />
+                    Выйти с сайта
+                  </button>
+                ) : null}
               </div>
             </div>
       </>

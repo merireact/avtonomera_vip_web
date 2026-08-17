@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 export default function Transfer() {
   return (
-    <div className="mx-auto max-w-4xl px-4 pb-16 pt-6 sm:px-6 sm:pt-10">
+    <div className="mx-auto max-w-4xl pb-16 pt-4 sm:pt-10">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}

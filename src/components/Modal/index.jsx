@@ -19,7 +19,7 @@ export default function Modal({ title, children, onClose, footer }) {
   }, []);
 
   return createPortal(
-    <div className="fixed inset-0 z-[180] flex min-h-0 items-center justify-center p-2 sm:p-4">
+    <div className="fixed inset-0 z-[180] flex min-h-0 items-center justify-center p-2 pt-[max(0.5rem,env(safe-area-inset-top))] pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:p-4">
       <button
         type="button"
         aria-label="Закрыть"
@@ -34,7 +34,7 @@ export default function Modal({ title, children, onClose, footer }) {
         className={[
           "glass relative z-10 flex w-full max-w-2xl min-h-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_28px_80px_rgba(15,23,42,.20)]",
           /* Мобильный: почти на всю высоту — тело модалки скроллится */
-          "max-h-[calc(100dvh-0.75rem)] h-[calc(100dvh-0.75rem)]",
+          "max-h-[calc(100dvh-1rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))] h-[calc(100dvh-1rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))]",
           /* От sm: высота по контенту, но не выше viewport — при длинной форме скролл внутри */
           "sm:h-auto sm:max-h-[min(92vh,860px)] sm:min-h-0",
         ].join(" ")}

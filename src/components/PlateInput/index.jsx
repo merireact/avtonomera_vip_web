@@ -187,7 +187,7 @@ export default function PlateInput({
   return (
     <div
       className={[
-        "glass w-full overflow-visible",
+        "glass w-full min-w-0 overflow-visible",
         size === "lg" ? "p-2 sm:p-6" : "p-2 sm:p-5",
       ].join(" ")}
     >
