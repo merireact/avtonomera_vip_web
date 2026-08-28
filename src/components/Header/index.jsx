@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { LogOut, Mail, Menu, Phone, X } from "lucide-react";
+import { Mail, Menu, Phone, X } from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import styles from "./styles.module.css";
 import logo from "../../assets/logo.png";
 import maxMessengerIcon from "../../assets/max-messenger.png";
 import { IconTelegram, IconWhatsApp } from "../MessengerIcons";
-import { useSiteGate } from "../../state/siteGateState";
 
 const nav = [
   { to: "/", label: "Главная" },
@@ -37,7 +36,6 @@ function NavItem({ to, label }) {
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isConfigured, lock } = useSiteGate();
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -139,17 +137,6 @@ export default function Header() {
                 <IconWhatsApp className="h-[18px] w-[18px]" />
               </a>
             </div>
-
-            {isConfigured ? (
-              <button
-                type="button"
-                className="hidden items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 transition hover:bg-slate-50 lg:inline-flex"
-                onClick={lock}
-              >
-                <LogOut className="h-3.5 w-3.5" strokeWidth={2} aria-hidden />
-                Выйти
-              </button>
-            ) : null}
 
             <button
               type="button"
@@ -286,19 +273,6 @@ export default function Header() {
                     <IconWhatsApp className="h-[18px] w-[18px]" />
                   </a>
                 </div>
-                {isConfigured ? (
-                  <button
-                    type="button"
-                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800"
-                    onClick={() => {
-                      setMenuOpen(false);
-                      lock();
-                    }}
-                  >
-                    <LogOut className="h-4 w-4" strokeWidth={2} aria-hidden />
-                    Выйти с сайта
-                  </button>
-                ) : null}
               </div>
             </div>
       </>
